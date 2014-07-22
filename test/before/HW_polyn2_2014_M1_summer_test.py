@@ -35,5 +35,13 @@ class TestBracketPrint(unittest.TestCase):
         self.assertEqual('(-2w-2)', hw.bracket_print(1, 2, 'w', 1, 2))
 
 
+class TestBracketFracstylePrint(unittest.TestCase):
+    def test(self):
+        self.assertEqual(r'\myfrac{(x+1)}{2}',   hw.bracket_fracstyle_print(2, 0, 1, 'x', 0, 1))
+        self.assertEqual(r'\myfrac{(-y-1)}{3}',  hw.bracket_fracstyle_print(3, 1, 1, 'y', 1, 1))
+        self.assertEqual(r'\myfrac{(2z+2)}{4}',  hw.bracket_fracstyle_print(4, 0, 2, 'z', 0, 2))
+        self.assertEqual(r'\myfrac{(-2w-2)}{5}', hw.bracket_fracstyle_print(5, 1, 2, 'w', 1, 2))
+
+
 if __name__ == '__main__':
     unittest.main()
