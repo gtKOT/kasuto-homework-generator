@@ -21,5 +21,11 @@ class TestIntCoeff(unittest.TestCase):
         self.assertEqual(hw.int_coeff(2), '2')
 
 
+class TestFracCoeff(unittest.TestCase):
+    def test(self):
+        self.assertEqual(hw.frac_coeff(1), '')
+        self.assertEqual(hw.frac_coeff(2), r'\myfrac{1}{2}')
+
+
 if __name__ == '__main__':
     unittest.main()
