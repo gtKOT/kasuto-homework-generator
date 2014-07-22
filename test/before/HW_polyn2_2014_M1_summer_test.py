@@ -87,5 +87,21 @@ class TestFracPolynI(unittest.TestCase):
         )
 
 
+class TestFracPolynII(unittest.TestCase):
+    def test(self):
+        self.assertEqual(
+            r'\myfrac{(3x+4)}{2}+\myfrac{(6x+7)}{5}',
+            hw.frac_polynII('x', [0, 0, 0, 0, 0, 0], [2, 3, 4, 5, 6, 7], False)
+        )
+        self.assertEqual(
+            r'-\myfrac{(-3y-4)}{2}-\myfrac{(-6y-7)}{5}',
+            hw.frac_polynII('y', [1, 1, 1, 1, 1, 1], [2, 3, 4, 5, 6, 7], False)
+        )
+        self.assertEqual(
+            r'$-\myfrac{(-3y-4)}{2}-\myfrac{(-6y-7)}{5}$',
+            hw.frac_polynII('y', [1, 1, 1, 1, 1, 1], [2, 3, 4, 5, 6, 7], True)
+        )
+
+
 if __name__ == '__main__':
     unittest.main()
