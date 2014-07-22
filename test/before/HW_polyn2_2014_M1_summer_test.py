@@ -103,5 +103,29 @@ class TestFracPolynII(unittest.TestCase):
         )
 
 
+class TestTenkaiA(unittest.TestCase):
+    def test(self):
+        self.assertEqual(
+            'x+2+x+3',
+            hw.tenkaiA('x', [0, 0, 0, 0, 0, 0], [1, 1, 2, 1, 1, 3], False)
+        )
+        self.assertEqual(
+            '6y+8+30y+35',
+            hw.tenkaiA('y', [0, 0, 0, 0, 0, 0], [2, 3, 4, 5, 6, 7], False)
+        )
+        self.assertEqual(
+            '-z-2-z-3',
+            hw.tenkaiA('z', [1, 0, 0, 1, 0, 0], [1, 1, 2, 1, 1, 3], False)
+        )
+        self.assertEqual(
+            '-6w-8-30w-35',
+            hw.tenkaiA('w', [1, 0, 0, 1, 0, 0], [2, 3, 4, 5, 6, 7], False)
+        )
+        self.assertEqual(
+            '$-6w-8-30w-35$',
+            hw.tenkaiA('w', [1, 0, 0, 1, 0, 0], [2, 3, 4, 5, 6, 7], True)
+        )
+
+
 if __name__ == '__main__':
     unittest.main()
