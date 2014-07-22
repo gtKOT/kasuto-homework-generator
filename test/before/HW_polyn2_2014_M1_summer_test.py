@@ -67,5 +67,25 @@ class TestIntPolyn(unittest.TestCase):
         )
 
 
+class TestFracPolynI(unittest.TestCase):
+    def test(self):
+        self.assertEqual(
+            '$(x+2)+(x+3)$',
+            hw.frac_polynI('x', [0, 0, 0, 0, 0, 0], [1, 1, 2, 1, 1, 3])
+        )
+        self.assertEqual(
+            '$\myfrac{1}{2}(3y+4)+\myfrac{1}{5}(6y+7)$',
+            hw.frac_polynI('y', [0, 0, 0, 0, 0, 0], [2, 3, 4, 5, 6, 7])
+        )
+        self.assertEqual(
+            '$-(-z-2)-(-z-3)$',
+            hw.frac_polynI('z', [1, 1, 1, 1, 1, 1], [1, 1, 2, 1, 1, 3])
+        )
+        self.assertEqual(
+            '$-\myfrac{1}{2}(-3w-4)-\myfrac{1}{5}(-6w-7)$',
+            hw.frac_polynI('w', [1, 1, 1, 1, 1, 1], [2, 3, 4, 5, 6, 7])
+        )
+
+
 if __name__ == '__main__':
     unittest.main()
