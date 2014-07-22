@@ -43,5 +43,29 @@ class TestBracketFracstylePrint(unittest.TestCase):
         self.assertEqual(r'\myfrac{(-2w-2)}{5}', hw.bracket_fracstyle_print(5, 1, 2, 'w', 1, 2))
 
 
+class TestIntPolyn(unittest.TestCase):
+    def test(self):
+        self.assertEqual(
+            '(x+2)+(x+3)',
+            hw.int_polyn('x', [0, 0, 0, 0, 0, 0], [1, 1, 2, 1, 1, 3], False)
+        )
+        self.assertEqual(
+            '2(3y+4)+5(6y+7)',
+            hw.int_polyn('y', [0, 0, 0, 0, 0, 0], [2, 3, 4, 5, 6, 7], False)
+        )
+        self.assertEqual(
+            '-(-z-2)-(-z-3)',
+            hw.int_polyn('z', [1, 1, 1, 1, 1, 1], [1, 1, 2, 1, 1, 3], False)
+        )
+        self.assertEqual(
+            '-2(-3w-4)-5(-6w-7)',
+            hw.int_polyn('w', [1, 1, 1, 1, 1, 1], [2, 3, 4, 5, 6, 7], False)
+        )
+        self.assertEqual(
+            '$-2(-3w-4)-5(-6w-7)$',
+            hw.int_polyn('w', [1, 1, 1, 1, 1, 1], [2, 3, 4, 5, 6, 7], True)
+        )
+
+
 if __name__ == '__main__':
     unittest.main()
