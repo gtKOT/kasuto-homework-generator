@@ -163,5 +163,17 @@ class TestTenkaiB(unittest.TestCase):
         )
 
 
+class TestCommonFactor(unittest.TestCase):
+    def test(self):
+        # ((x+2)+(x+3)) / 2
+        self.assertEqual(1, hw.common_factor([0, 0, 0, 0, 0, 0], [1, 1, 2, 1, 1, 3], 2))
+        # ((x+2)+(11x+28)) / 60
+        self.assertEqual(1, hw.common_factor([0, 0, 0, 0, 0, 0], [1, 1, 11, 1, 1, 28], 60))
+        # ((x+2)+(x-2)) / 2
+        self.assertEqual(2, hw.common_factor([0, 0, 0, 0, 0, 1], [1, 1, 2, 1, 1, 2], 2))
+        # ((x+2)-(x-2)) / 4
+        self.assertEqual(4, hw.common_factor([0, 0, 0, 0, 1, 0], [1, 1, 2, 1, 1, 2], 4))
+
+
 if __name__ == '__main__':
     unittest.main()
