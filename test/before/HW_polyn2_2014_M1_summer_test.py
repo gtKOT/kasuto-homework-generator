@@ -199,5 +199,18 @@ class TestTenkaiBreduct(unittest.TestCase):
         )
 
 
+class TestIsAdmissible(unittest.TestCase):
+    def setUp(self):
+        self.allPlus = [0, 0, 0, 0, 0, 0]
+
+    def test(self):
+        self.assertTrue(hw.isAdmissible([self.allPlus,  [2, 3, 4, 5, 6, 7]], []))
+        self.assertFalse(hw.isAdmissible([self.allPlus, [2, 3, 4, 5, 6, 7]], [[self.allPlus, [2, 3, 4, 5, 6, 7]]]))
+        self.assertFalse(hw.isAdmissible([self.allPlus, [2, 3, 4, 5, 6, 7]], [[self.allPlus, [5, 6, 7, 2, 3, 4]]]))
+        self.assertFalse(hw.isAdmissible([self.allPlus, [1, 3, 4, 5, 6, 7]], []))
+        self.assertFalse(hw.isAdmissible([self.allPlus, [2, 3, 4, 1, 6, 7]], []))
+        self.assertFalse(hw.isAdmissible([self.allPlus, [2, 3, 4, 2, 6, 7]], []))
+
+
 if __name__ == '__main__':
     unittest.main()
