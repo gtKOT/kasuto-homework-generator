@@ -168,11 +168,35 @@ class TestCommonFactor(unittest.TestCase):
         # ((x+2)+(x+3)) / 2
         self.assertEqual(1, hw.common_factor([0, 0, 0, 0, 0, 0], [1, 1, 2, 1, 1, 3], 2))
         # ((x+2)+(11x+28)) / 60
-        self.assertEqual(1, hw.common_factor([0, 0, 0, 0, 0, 0], [1, 1, 11, 1, 1, 28], 60))
+        self.assertEqual(6, hw.common_factor([0, 0, 0, 0, 0, 0], [1, 1, 2, 1, 11, 28], 60))
         # ((x+2)+(x-2)) / 2
         self.assertEqual(2, hw.common_factor([0, 0, 0, 0, 0, 1], [1, 1, 2, 1, 1, 2], 2))
         # ((x+2)-(x-2)) / 4
         self.assertEqual(4, hw.common_factor([0, 0, 0, 0, 1, 0], [1, 1, 2, 1, 1, 2], 4))
+
+
+class TestTenkaiBreduct(unittest.TestCase):
+    def test(self):
+        self.assertEqual(
+            '2x+5',  # ((x+2)+(x+3)) / 1
+            hw.tenkaiB_reduct('x', [0, 0, 0, 0, 0, 0], [1, 1, 2, 1, 1, 3], False, 1)
+        )
+        self.assertEqual(
+            '2x+5',  # ((x+2)+(11x+28)) / 6
+            hw.tenkaiB_reduct('x', [0, 0, 0, 0, 0, 0], [1, 1, 2, 1, 11, 28], False, 6)
+        )
+        self.assertEqual(
+            'x',  # ((x+2)+(x-2)) / 2
+            hw.tenkaiB_reduct('x', [0, 0, 0, 0, 0, 1], [1, 1, 2, 1, 1, 2], False, 2)
+        )
+        self.assertEqual(
+            '1',  # ((x+2)-(x-2)) / 4
+            hw.tenkaiB_reduct('x', [0, 0, 0, 0, 1, 0], [1, 1, 2, 1, 1, 2], False, 4)
+        )
+        self.assertEqual(
+            '0',  # ((x+2)-(x+2)) / 2
+            hw.tenkaiB_reduct('x', [0, 0, 0, 1, 0, 0], [1, 1, 2, 1, 1, 2], False, 2)
+        )
 
 
 if __name__ == '__main__':
