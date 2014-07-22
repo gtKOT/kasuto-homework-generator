@@ -127,5 +127,41 @@ class TestTenkaiA(unittest.TestCase):
         )
 
 
+class TestTenkaiB(unittest.TestCase):
+    def test(self):
+        self.assertEqual(
+            '2x+5',  # (x+2)+(x+3)
+            hw.tenkaiB('x', [0, 0, 0, 0, 0, 0], [1, 1, 2, 1, 1, 3], False)
+        )
+        self.assertEqual(
+            '36y+43',  # 2(3y+4)+5(6y+7)
+            hw.tenkaiB('y', [0, 0, 0, 0, 0, 0], [2, 3, 4, 5, 6, 7], False)
+        )
+        self.assertEqual(
+            '-2z+5',  # -(z-2)-(z-3)
+            hw.tenkaiB('z', [1, 0, 1, 1, 0, 1], [1, 1, 2, 1, 1, 3], False)
+        )
+        self.assertEqual(
+            '-36w+43',  # -2(3w-4)-5(6w-7)
+            hw.tenkaiB('w', [1, 0, 1, 1, 0, 1], [2, 3, 4, 5, 6, 7], False)
+        )
+        self.assertEqual(
+            '-2a',  # -(a+2)-(a-2)
+            hw.tenkaiB('a', [1, 0, 0, 1, 0, 1], [1, 1, 2, 1, 1, 2], False)
+        )
+        self.assertEqual(
+            '-4',  # -(b+2)-(-b+2)
+            hw.tenkaiB('b', [1, 0, 0, 1, 1, 0], [1, 1, 2, 1, 1, 2], False)
+        )
+        self.assertEqual(
+            '0',  # -(c+2)-(-c-2)
+            hw.tenkaiB('c', [1, 0, 0, 1, 1, 1], [1, 1, 2, 1, 1, 2], False)
+        )
+        self.assertEqual(
+            '$0$',
+            hw.tenkaiB('c', [1, 0, 0, 1, 1, 1], [1, 1, 2, 1, 1, 2], True)
+        )
+
+
 if __name__ == '__main__':
     unittest.main()
