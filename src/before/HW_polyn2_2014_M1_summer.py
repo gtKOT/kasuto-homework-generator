@@ -197,123 +197,123 @@ def rand_coeff(prob):
         interval += prob[i]
 
 if __name__ == "__main__":
-  #prob = [0]*5
-  #prob[1] = 30
-  #prob[2] = 10
-  #prob[3] = 10
-  #prob[4] = 50
+    #prob = [0]*5
+    #prob[1] = 30
+    #prob[2] = 10
+    #prob[3] = 10
+    #prob[4] = 50
 
-  # 係数の出やすさ設定
-  prob = [0]*20
-  # 1～9が、等確率で、大体10～19より30倍くらい出やすいように設定。
-  for i in xrange(1,10):
-      prob[i] = 30
-  for i in xrange(10,20):
-      prob[i] = 1
+    # 係数の出やすさ設定
+    prob = [0]*20
+    # 1～9が、等確率で、大体10～19より30倍くらい出やすいように設定。
+    for i in xrange(1,10):
+        prob[i] = 30
+    for i in xrange(10,20):
+        prob[i] = 1
 
-  moji_list = ["x","y","a"]
-  moji_prob = [50,1,10]
+    moji_list = ["x","y","a"]
+    moji_prob = [50,1,10]
 
-  #cnt = [0]*20
-  #for j in xrange(1000):
-  #    a = rand_coeff(prob)
-  #    cnt[a] += 1
-  #
-  #print cnt
+    #cnt = [0]*20
+    #for j in xrange(1000):
+    #    a = rand_coeff(prob)
+    #    cnt[a] += 1
+    #
+    #print cnt
 
-  # データの生成 -------------------------------------------------------------------
-  sgn = [0]*6
-  intdata = [0]*6
-  data_list = []
-  seed = 20140627
-  random.seed(seed)
+    # データの生成 -------------------------------------------------------------------
+    sgn = [0]*6
+    intdata = [0]*6
+    data_list = []
+    seed = 20140627
+    random.seed(seed)
 
-  Nmax = 200 # とりあえず200題（2の倍数）
-  N = 0 # = len(data_list)
-  while N < Nmax:
-      for j in xrange(6):
-          sgn[j] = random.randint(0,1)
-          intdata[j] = rand_coeff(prob)
-      tmpdata = [copy.copy(sgn),copy.copy(intdata)]
-      if isAdmissible(tmpdata,data_list):
-          data_list +=[copy.deepcopy(tmpdata)]
-          N += 1
+    Nmax = 200 # とりあえず200題（2の倍数）
+    N = 0 # = len(data_list)
+    while N < Nmax:
+        for j in xrange(6):
+            sgn[j] = random.randint(0,1)
+            intdata[j] = rand_coeff(prob)
+        tmpdata = [copy.copy(sgn),copy.copy(intdata)]
+        if isAdmissible(tmpdata,data_list):
+            data_list +=[copy.deepcopy(tmpdata)]
+            N += 1
 
-  # 問題の生成 ---------------------------------------------------------------------
-  TeX = r"% seed: " + str(seed) + "\n"
-  TeX += r"\begin{multienumerate}\restmultienumparameters"
+    # 問題の生成 ---------------------------------------------------------------------
+    TeX = r"% seed: " + str(seed) + "\n"
+    TeX += r"\begin{multienumerate}\restmultienumparameters"
 
-  # 問題ごとの使用文字の確定
-  mojinum = []
-  for i in xrange(Nmax):
-      n = rand_coeff(moji_prob)
-      mojinum += [n]
-      moji = moji_list[n]
-      sgn = data_list[i][0]
-      intdata = data_list[i][1]
-      if i % 2 == 0:
-          TeX += "\n" + r"\mitemxx"
-      TeX +=r"{" + frac_polynI(moji,sgn,intdata) + r"}"
+    # 問題ごとの使用文字の確定
+    mojinum = []
+    for i in xrange(Nmax):
+        n = rand_coeff(moji_prob)
+        mojinum += [n]
+        moji = moji_list[n]
+        sgn = data_list[i][0]
+        intdata = data_list[i][1]
+        if i % 2 == 0:
+            TeX += "\n" + r"\mitemxx"
+        TeX +=r"{" + frac_polynI(moji,sgn,intdata) + r"}"
 
-  TeX += "\n" + r"\end{multienumerate}"
+    TeX += "\n" + r"\end{multienumerate}"
 
-  dt = datetime.datetime.now()
-  file_name = dt.strftime("M1a_HW_frac_%Y%m%d_%H%M_%S")
-  file = open(file_name+".tex" ,"w")
-  file.write(TeX)
-  file.close()
+    dt = datetime.datetime.now()
+    file_name = dt.strftime("M1a_HW_frac_%Y%m%d_%H%M_%S")
+    file = open(file_name+".tex" ,"w")
+    file.write(TeX)
+    file.close()
 
-  print "plobrems are generated..."
+    print "plobrems are generated..."
 
-  colQ = 5
-  TeX = r"% seed: " + str(seed) + "\n"
-  TeX += r"%"
+    colQ = 5
+    TeX = r"% seed: " + str(seed) + "\n"
+    TeX += r"%"
 
-  for i in xrange(Nmax):
-      n = mojinum[i]
-      moji = moji_list[n]
-      sgn = data_list[i][0]
-      intdata = data_list[i][1]
-      if i % (2*colQ) == 0:
-          TeX += "\n" + r"\questionII{1cm}{%"
-          page_open = True
-          col_open = True
-      TeX += "\n" + r"\qIIans{"
-      TeX += frac_polynI(moji,sgn,intdata) + r"\\"
-      #TeX += "\n" + r"& $ \speq " + frac_polynII(moji,sgn,intdata,not math_mode) + r" $ \fracv \\"
-      g_int = gcd(intdata[0], intdata[3])
-      bunbo = intdata[0] * intdata[3] / g_int
-      intdata[0], intdata[3] = intdata[3]/g_int, intdata[0]/g_int
-      TeX += "\n" + r"& $ \speq \myfrac{" + int_polyn(moji,sgn,intdata,not math_mode) + r"}{" + str(bunbo) + r"} $ \fracv \\"
-      TeX += "\n" + r"& $ \speq \myfrac{" + tenkaiA(moji,sgn,intdata,not math_mode) + r"}{" + str(bunbo) + r"} $ \fracv \\"
-      TeX += "\n" + r"& $ \speq \myfrac{" + tenkaiB(moji,sgn,intdata,not math_mode) + r"}{" + str(bunbo) + r"} $ \fracv \\"
-      g = common_factor(sgn,intdata,bunbo)
-      if g > 1:
-          if bunbo == g:
-              TeX += "\n" + r"& $ \speq " + tenkaiB_reduct(moji,sgn,intdata,not math_mode,g) + r" $ \fracv \\"
-          else:
-              TeX += "\n" + r"& $ \speq \myfrac{" + tenkaiB_reduct(moji,sgn,intdata,not math_mode,g) + r"}{" + str(bunbo/g) + r"} $ \fracv \\"
-          TeX += "\n" + r"}{4cm}"
-      else:
-          TeX += "\n" + r"}{3.2cm}"
-      if (i+1) % colQ == 0:
-          TeX += "\n" + r"}{%"
-          col_open = False
-      if (i+1) % (2*colQ) == 0:
-          TeX += "\n" + r"}" + "\n" + r"%\newpage"
-          page_open = False
+    for i in xrange(Nmax):
+        n = mojinum[i]
+        moji = moji_list[n]
+        sgn = data_list[i][0]
+        intdata = data_list[i][1]
+        if i % (2*colQ) == 0:
+            TeX += "\n" + r"\questionII{1cm}{%"
+            page_open = True
+            col_open = True
+        TeX += "\n" + r"\qIIans{"
+        TeX += frac_polynI(moji,sgn,intdata) + r"\\"
+        #TeX += "\n" + r"& $ \speq " + frac_polynII(moji,sgn,intdata,not math_mode) + r" $ \fracv \\"
+        g_int = gcd(intdata[0], intdata[3])
+        bunbo = intdata[0] * intdata[3] / g_int
+        intdata[0], intdata[3] = intdata[3]/g_int, intdata[0]/g_int
+        TeX += "\n" + r"& $ \speq \myfrac{" + int_polyn(moji,sgn,intdata,not math_mode) + r"}{" + str(bunbo) + r"} $ \fracv \\"
+        TeX += "\n" + r"& $ \speq \myfrac{" + tenkaiA(moji,sgn,intdata,not math_mode) + r"}{" + str(bunbo) + r"} $ \fracv \\"
+        TeX += "\n" + r"& $ \speq \myfrac{" + tenkaiB(moji,sgn,intdata,not math_mode) + r"}{" + str(bunbo) + r"} $ \fracv \\"
+        g = common_factor(sgn,intdata,bunbo)
+        if g > 1:
+            if bunbo == g:
+                TeX += "\n" + r"& $ \speq " + tenkaiB_reduct(moji,sgn,intdata,not math_mode,g) + r" $ \fracv \\"
+            else:
+                TeX += "\n" + r"& $ \speq \myfrac{" + tenkaiB_reduct(moji,sgn,intdata,not math_mode,g) + r"}{" + str(bunbo/g) + r"} $ \fracv \\"
+            TeX += "\n" + r"}{4cm}"
+        else:
+            TeX += "\n" + r"}{3.2cm}"
+        if (i+1) % colQ == 0:
+            TeX += "\n" + r"}{%"
+            col_open = False
+        if (i+1) % (2*colQ) == 0:
+            TeX += "\n" + r"}" + "\n" + r"%\newpage"
+            page_open = False
 
 
-  if col_open:
-      TeX += "\n" + r"}{%"
-  if page_open:
-      TeX += "\n" + r"}"
+    if col_open:
+        TeX += "\n" + r"}{%"
+    if page_open:
+        TeX += "\n" + r"}"
 
-  dt = datetime.datetime.now()
-  file_name = dt.strftime("M1a_HW_fracAns_%Y%m%d_%H%M_%S")
-  file = open(file_name+".tex" ,"w")
-  file.write(TeX)
-  file.close()
+    dt = datetime.datetime.now()
+    file_name = dt.strftime("M1a_HW_fracAns_%Y%m%d_%H%M_%S")
+    file = open(file_name+".tex" ,"w")
+    file.write(TeX)
+    file.close()
 
-  print "End."
+    print "End."
 
