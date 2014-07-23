@@ -115,9 +115,7 @@ def tenkaiB(moji, sgn, intdata, atMathMode):
 def common_factor(sgn, intdata, bunbo):
     coeff = intdata[0] * intdata[1] * (-1) ** (sgn[0] + sgn[1]) + intdata[3] * intdata[4] * (-1) ** (sgn[3] + sgn[4])
     constt = intdata[0] * intdata[2] * (-1) ** (sgn[0] + sgn[2]) + intdata[3] * intdata[5] * (-1) ** (sgn[3] + sgn[5])
-    gi = gcd(abs(coeff), abs(constt))
-    gii = gcd(gi, bunbo)
-    return gii
+    return gcd(gcd(abs(coeff), abs(constt)), bunbo)
 
 
 # 約分実行
