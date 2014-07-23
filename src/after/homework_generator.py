@@ -16,26 +16,26 @@ math_mode = True
 
 # TeX 出力 ------------------------------------------------------
 def sgn_print(boolnum, avoid_plus):
-    output = "+"
     if boolnum == 1:
-        output = "-"
-    elif avoid_plus:
-        output = ""
-    return output
+        return "-"
+    elif (boolnum == 0) and (not avoid_plus):
+        return "+"
+    else:
+        return ""
 
 
 def int_coeff(num):
-    output = ""
     if num > 1:
-        output += str(num)
-    return output
+        return str(num)
+    else:
+        return ""
 
 
 def frac_coeff(num):
-    output = ""
     if num > 1:
-        output += r"\myfrac{1}{" + str(num) + r"}"
-    return output
+        return r"\myfrac{1}{" + str(num) + r"}"
+    else:
+        return ""
 
 
 def bracket_print(sgnL, coeff, moji, sgnR, int):
@@ -206,8 +206,8 @@ if __name__ == "__main__":
             N += 1
 
     # 問題の生成 ---------------------------------------------------------------------
-    TeX = r"% seed: " + str(seed) + "\n"
-    TeX += r"\begin{multienumerate}\restmultienumparameters"
+    problems_tex = r"% seed: " + str(seed) + "\n"
+    problems_tex += r"\begin{multienumerate}\restmultienumparameters"
 
     # 問題ごとの使用文字の確定
     mojinum = []
@@ -218,22 +218,22 @@ if __name__ == "__main__":
         sgn = data_list[i][0]
         intdata = data_list[i][1]
         if i % 2 == 0:
-            TeX += "\n" + r"\mitemxx"
-        TeX += r"{" + frac_polyn(moji, sgn, intdata) + r"}"
+            problems_tex += "\n" + r"\mitemxx"
+        problems_tex += r"{" + frac_polyn(moji, sgn, intdata) + r"}"
 
-    TeX += "\n" + r"\end{multienumerate}"
+    problems_tex += "\n" + r"\end{multienumerate}"
 
     dt = datetime.datetime.now()
     file_name = dt.strftime("M1a_HW_frac_%Y%m%d_%H%M_%S")
     file = open(file_name + ".tex", "w")
-    file.write(TeX)
+    file.write(problems_tex)
     file.close()
 
     print "problems are generated..."
 
     colQ = 5
-    TeX = r"% seed: " + str(seed) + "\n"
-    TeX += r"%"
+    answers_tex = r"% seed: " + str(seed) + "\n"
+    answers_tex += r"%"
 
     for i in xrange(Nmax):
         n = mojinum[i]
@@ -241,47 +241,47 @@ if __name__ == "__main__":
         sgn = data_list[i][0]
         intdata = data_list[i][1]
         if i % (2 * colQ) == 0:
-            TeX += "\n" + r"\questionII{1cm}{%"
+            answers_tex += "\n" + r"\questionII{1cm}{%"
             page_open = True
             col_open = True
-        TeX += "\n" + r"\qIIans{"
-        TeX += frac_polyn(moji, sgn, intdata) + r"\\"
+        answers_tex += "\n" + r"\qIIans{"
+        answers_tex += frac_polyn(moji, sgn, intdata) + r"\\"
         #TeX += "\n" + r"& $ \speq " + frac_polynII(moji,sgn,intdata,not math_mode) + r" $ \fracv \\"
         g_int = gcd(intdata[0], intdata[3])
         bunbo = intdata[0] * intdata[3] / g_int
         intdata[0], intdata[3] = intdata[3] / g_int, intdata[0] / g_int
-        TeX += "\n" + r"& $ \speq \myfrac{" + int_polyn(moji, sgn, intdata, not math_mode) + r"}{" + str(
+        answers_tex += "\n" + r"& $ \speq \myfrac{" + int_polyn(moji, sgn, intdata, not math_mode) + r"}{" + str(
             bunbo) + r"} $ \fracv \\"
-        TeX += "\n" + r"& $ \speq \myfrac{" + tenkaiA(moji, sgn, intdata, not math_mode) + r"}{" + str(
+        answers_tex += "\n" + r"& $ \speq \myfrac{" + tenkaiA(moji, sgn, intdata, not math_mode) + r"}{" + str(
             bunbo) + r"} $ \fracv \\"
-        TeX += "\n" + r"& $ \speq \myfrac{" + tenkaiB(moji, sgn, intdata, not math_mode) + r"}{" + str(
+        answers_tex += "\n" + r"& $ \speq \myfrac{" + tenkaiB(moji, sgn, intdata, not math_mode) + r"}{" + str(
             bunbo) + r"} $ \fracv \\"
         g = common_factor(sgn, intdata, bunbo)
         if g > 1:
             if bunbo == g:
-                TeX += "\n" + r"& $ \speq " + tenkaiB_reduct(moji, sgn, intdata, not math_mode, g) + r" $ \fracv \\"
+                answers_tex += "\n" + r"& $ \speq " + tenkaiB_reduct(moji, sgn, intdata, not math_mode, g) + r" $ \fracv \\"
             else:
-                TeX += "\n" + r"& $ \speq \myfrac{" + tenkaiB_reduct(moji, sgn, intdata, not math_mode,
+                answers_tex += "\n" + r"& $ \speq \myfrac{" + tenkaiB_reduct(moji, sgn, intdata, not math_mode,
                                                                      g) + r"}{" + str(bunbo / g) + r"} $ \fracv \\"
-            TeX += "\n" + r"}{4cm}"
+            answers_tex += "\n" + r"}{4cm}"
         else:
-            TeX += "\n" + r"}{3.2cm}"
+            answers_tex += "\n" + r"}{3.2cm}"
         if (i + 1) % colQ == 0:
-            TeX += "\n" + r"}{%"
+            answers_tex += "\n" + r"}{%"
             col_open = False
         if (i + 1) % (2 * colQ) == 0:
-            TeX += "\n" + r"}" + "\n" + r"%\newpage"
+            answers_tex += "\n" + r"}" + "\n" + r"%\newpage"
             page_open = False
 
     if col_open:
-        TeX += "\n" + r"}{%"
+        answers_tex += "\n" + r"}{%"
     if page_open:
-        TeX += "\n" + r"}"
+        answers_tex += "\n" + r"}"
 
     dt = datetime.datetime.now()
     file_name = dt.strftime("M1a_HW_fracAns_%Y%m%d_%H%M_%S")
     file = open(file_name + ".tex", "w")
-    file.write(TeX)
+    file.write(answers_tex)
     file.close()
 
     print "End."
