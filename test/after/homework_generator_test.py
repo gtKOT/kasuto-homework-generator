@@ -207,16 +207,27 @@ class TestTenkaiBreduct(unittest.TestCase):
 
 
 class TestIsAdmissible(unittest.TestCase):
-    def setUp(self):
-        self.allPlus = [0, 0, 0, 0, 0, 0]
-
     def test(self):
-        self.assertTrue(hw.isAdmissible([self.allPlus,  [2, 3, 4, 5, 6, 7]], []))
-        self.assertFalse(hw.isAdmissible([self.allPlus, [2, 3, 4, 5, 6, 7]], [[self.allPlus, [2, 3, 4, 5, 6, 7]]]))
-        self.assertFalse(hw.isAdmissible([self.allPlus, [2, 3, 4, 5, 6, 7]], [[self.allPlus, [5, 6, 7, 2, 3, 4]]]))
-        self.assertFalse(hw.isAdmissible([self.allPlus, [1, 3, 4, 5, 6, 7]], []))
-        self.assertFalse(hw.isAdmissible([self.allPlus, [2, 3, 4, 1, 6, 7]], []))
-        self.assertFalse(hw.isAdmissible([self.allPlus, [2, 3, 4, 2, 6, 7]], []))
+        all_plus = [0, 0, 0, 0, 0, 0]
+        self.assertTrue(hw.isAdmissible([all_plus,  [2, 3, 4, 5, 6, 7]], []))
+        self.assertFalse(hw.isAdmissible([all_plus, [2, 3, 4, 5, 6, 7]], [[all_plus, [2, 3, 4, 5, 6, 7]]]))
+        self.assertFalse(hw.isAdmissible([all_plus, [2, 3, 4, 5, 6, 7]], [[all_plus, [5, 6, 7, 2, 3, 4]]]))
+        self.assertFalse(hw.isAdmissible([all_plus, [1, 3, 4, 5, 6, 7]], []))
+        self.assertFalse(hw.isAdmissible([all_plus, [2, 3, 4, 1, 6, 7]], []))
+        self.assertFalse(hw.isAdmissible([all_plus, [2, 3, 4, 2, 6, 7]], []))
+
+
+class TestCreateProblemsTex(unittest.TestCase):
+    def test(self):
+        data_list = [
+            [[0, 0, 0, 0, 0, 0], [2, 3, 4, 5, 6, 7]],
+            [[1, 1, 1, 1, 1, 1], [1, 2, 3, 1, 4, 5]]
+        ]
+        symbols = ['x', 'y']
+        tex = r'\begin{multienumerate}\restmultienumparameters' + '\n' + \
+              r'\mitemxx{$\myfrac{1}{2}(3x+4)+\myfrac{1}{5}(6x+7)$}{$-(-2y-3)-(-4y-5)$}' + '\n' + \
+              r'\end{multienumerate}'
+        self.assertEqual(tex, hw.create_problems_tex(data_list, symbols))
 
 
 if __name__ == '__main__':
