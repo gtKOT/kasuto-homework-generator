@@ -23,30 +23,27 @@ def sgn_print(boolnum, avoid_plus=False):
         return ""
 
 
-def int_coeff(num):
-    if num > 1:
-        return str(num)
-    else:
-        return ""
-
-
-def frac_coeff(denominator):
+# 約分は行わない
+def coeff(numerator, denominator=1):
     if denominator > 1:
-        return r"\myfrac{1}{" + str(denominator) + "}"
+        return r"\myfrac{" + str(numerator) + "}{" + str(denominator) + "}"
+    elif numerator > 1:
+        return str(numerator)
     else:
         return ""
 
 
-def bracket_print(sgnL, coeff, moji, sgnR, int):
-    output = sgn_print(sgnL, avoid_plus=True) + int_coeff(coeff) + moji
-    output += sgn_print(sgnR) + str(int)
+# (ax+b)
+def bracket_print(sgnL, a, moji, sgnR, b):
+    output = sgn_print(sgnL, avoid_plus=True) + coeff(a) + moji
+    output += sgn_print(sgnR) + str(b)
     return "(" + output + ")"
 
 
 def int_polyn(moji, sgn, intdata, atMathMode=False):
-    output = sgn_print(sgn[0], avoid_plus=True) + int_coeff(intdata[0])
+    output = sgn_print(sgn[0], avoid_plus=True) + coeff(intdata[0])
     output += bracket_print(sgn[1], intdata[1], moji, sgn[2], intdata[2])
-    output += sgn_print(sgn[3]) + int_coeff(intdata[3])
+    output += sgn_print(sgn[3]) + coeff(intdata[3])
     output += bracket_print(sgn[4], intdata[4], moji, sgn[5], intdata[5])
 
     if atMathMode:
@@ -55,9 +52,9 @@ def int_polyn(moji, sgn, intdata, atMathMode=False):
 
 
 def frac_polyn(moji, sgn, intdata):
-    output = sgn_print(sgn[0], avoid_plus=True) + frac_coeff(intdata[0])
+    output = sgn_print(sgn[0], avoid_plus=True) + coeff(1, intdata[0])
     output += bracket_print(sgn[1], intdata[1], moji, sgn[2], intdata[2])
-    output += sgn_print(sgn[3]) + frac_coeff(intdata[3])
+    output += sgn_print(sgn[3]) + coeff(1, intdata[3])
     output += bracket_print(sgn[4], intdata[4], moji, sgn[5], intdata[5])
     return to_mathmode(output)
 
@@ -72,9 +69,9 @@ def tenkaiA(moji, sgn, intdata, atMathMode=False):
     sgnD = (sgn[3] + sgn[5]) % 2
     coeffD = intdata[3] * intdata[5]
 
-    output = sgn_print(sgnA, avoid_plus=True) + int_coeff(coeffA) + moji
+    output = sgn_print(sgnA, avoid_plus=True) + coeff(coeffA) + moji
     output += sgn_print(sgnB) + str(coeffB)
-    output += sgn_print(sgnC) + int_coeff(coeffC) + moji
+    output += sgn_print(sgnC) + coeff(coeffC) + moji
     output += sgn_print(sgnD) + str(coeffD)
 
     if atMathMode:
@@ -82,24 +79,25 @@ def tenkaiA(moji, sgn, intdata, atMathMode=False):
     return output
 
 
+# ax+b
 def tenkaiB(moji, sgn, intdata, atMathMode=False):
     output = ""
-    coeff  = intdata[0] * intdata[1] * (-1) ** (sgn[0] + sgn[1]) + intdata[3] * intdata[4] * (-1) ** (sgn[3] + sgn[4])
-    constt = intdata[0] * intdata[2] * (-1) ** (sgn[0] + sgn[2]) + intdata[3] * intdata[5] * (-1) ** (sgn[3] + sgn[5])
+    a = intdata[0] * intdata[1] * (-1) ** (sgn[0] + sgn[1]) + intdata[3] * intdata[4] * (-1) ** (sgn[3] + sgn[4])
+    b = intdata[0] * intdata[2] * (-1) ** (sgn[0] + sgn[2]) + intdata[3] * intdata[5] * (-1) ** (sgn[3] + sgn[5])
     avoid = False
 
-    if coeff > 0:
-        output += int_coeff(coeff) + moji
-    elif coeff < 0:
-        output += "-" + int_coeff(coeff * (-1)) + moji
+    if a > 0:
+        output += coeff(a) + moji
+    elif a < 0:
+        output += "-" + coeff(a * (-1)) + moji
     else:
         avoid = True
-    if constt > 0:
-        output += sgn_print(0, avoid) + str(constt)
-    elif constt < 0:
-        output += "-" + str(constt * (-1))
+    if b > 0:
+        output += sgn_print(0, avoid) + str(b)
+    elif b < 0:
+        output += "-" + str(b * (-1))
     else:
-        if coeff == 0:
+        if a == 0:
             output += "0"
 
     if atMathMode:
@@ -114,27 +112,28 @@ def common_factor(sgn, intdata, bunbo):
     return gcd(gcd(abs(coeff), abs(constt)), bunbo)
 
 
+# ax+b
 # 約分実行
 def tenkaiB_reduct(moji, sgn, intdata, g, atMathMode=False):
     output = ""
-    coeff = intdata[0] * intdata[1] * (-1) ** (sgn[0] + sgn[1]) + intdata[3] * intdata[4] * (-1) ** (sgn[3] + sgn[4])
-    constt = intdata[0] * intdata[2] * (-1) ** (sgn[0] + sgn[2]) + intdata[3] * intdata[5] * (-1) ** (sgn[3] + sgn[5])
+    a = intdata[0] * intdata[1] * (-1) ** (sgn[0] + sgn[1]) + intdata[3] * intdata[4] * (-1) ** (sgn[3] + sgn[4])
+    b = intdata[0] * intdata[2] * (-1) ** (sgn[0] + sgn[2]) + intdata[3] * intdata[5] * (-1) ** (sgn[3] + sgn[5])
     avoid = False
-    coeff = coeff / g
-    constt = constt / g
+    a = a / g
+    b = b / g
 
-    if coeff > 0:
-        output += int_coeff(coeff) + moji
-    elif coeff < 0:
-        output += "-" + int_coeff(coeff * (-1)) + moji
+    if a > 0:
+        output += coeff(a) + moji
+    elif a < 0:
+        output += "-" + coeff(a * (-1)) + moji
     else:
         avoid = True
-    if constt > 0:
-        output += sgn_print(0, avoid) + str(constt)
-    elif constt < 0:
-        output += "-" + str(constt * (-1))
+    if b > 0:
+        output += sgn_print(0, avoid) + str(b)
+    elif b < 0:
+        output += "-" + str(b * (-1))
     else:
-        if coeff == 0:
+        if a == 0:
             output += "0"
 
     if atMathMode:
@@ -275,4 +274,3 @@ if __name__ == "__main__":
     file.close()
 
     print "End."
-

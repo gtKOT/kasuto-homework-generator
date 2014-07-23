@@ -22,16 +22,13 @@ class TestSgnPrint(unittest.TestCase):
         self.assertEqual('-', hw.sgn_print(1, True))
 
 
-class TestIntCoeff(unittest.TestCase):
+class TestCoeff(unittest.TestCase):
     def test(self):
-        self.assertEqual('',  hw.int_coeff(1))
-        self.assertEqual('2', hw.int_coeff(2))
-
-
-class TestFracCoeff(unittest.TestCase):
-    def test(self):
-        self.assertEqual('', hw.frac_coeff(1))
-        self.assertEqual(r'\myfrac{1}{2}', hw.frac_coeff(2))
+        self.assertEqual('',  hw.coeff(1))
+        self.assertEqual('',  hw.coeff(1, 1))
+        self.assertEqual('2', hw.coeff(2))
+        self.assertEqual('2', hw.coeff(2, 1))
+        self.assertEqual(r'\myfrac{1}{2}', hw.coeff(1, 2))
 
 
 class TestBracketPrint(unittest.TestCase):
