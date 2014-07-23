@@ -229,7 +229,7 @@ if __name__ == "__main__":
     file.write(TeX)
     file.close()
 
-    print "plobrems are generated..."
+    print "problems are generated..."
 
     colQ = 5
     TeX = r"% seed: " + str(seed) + "\n"
