@@ -46,15 +46,19 @@ class TestIntPolyn(unittest.TestCase):
     def test(self):
         self.assertEqual(
             '(x+2)+(x+3)',
-            hw.int_polyn('x', [0, 0, 0, 0, 0, 0], [1, 1, 2, 1, 1, 3], False)
+            hw.int_polyn('x', [0, 0, 0, 0, 0, 0], [1, 1, 2, 1, 1, 3])
         )
         self.assertEqual(
             '2(3y+4)+5(6y+7)',
-            hw.int_polyn('y', [0, 0, 0, 0, 0, 0], [2, 3, 4, 5, 6, 7], False)
+            hw.int_polyn('y', [0, 0, 0, 0, 0, 0], [2, 3, 4, 5, 6, 7])
         )
         self.assertEqual(
             '-(-z-2)-(-z-3)',
-            hw.int_polyn('z', [1, 1, 1, 1, 1, 1], [1, 1, 2, 1, 1, 3], False)
+            hw.int_polyn('z', [1, 1, 1, 1, 1, 1], [1, 1, 2, 1, 1, 3])
+        )
+        self.assertEqual(
+            '-2(-3w-4)-5(-6w-7)',
+            hw.int_polyn('w', [1, 1, 1, 1, 1, 1], [2, 3, 4, 5, 6, 7])
         )
         self.assertEqual(
             '-2(-3w-4)-5(-6w-7)',
@@ -90,15 +94,19 @@ class TestTenkaiA(unittest.TestCase):
     def test(self):
         self.assertEqual(
             'x+2+x+3',
-            hw.tenkaiA('x', [0, 0, 0, 0, 0, 0], [1, 1, 2, 1, 1, 3], False)
+            hw.tenkaiA('x', [0, 0, 0, 0, 0, 0], [1, 1, 2, 1, 1, 3])
         )
         self.assertEqual(
             '6y+8+30y+35',
-            hw.tenkaiA('y', [0, 0, 0, 0, 0, 0], [2, 3, 4, 5, 6, 7], False)
+            hw.tenkaiA('y', [0, 0, 0, 0, 0, 0], [2, 3, 4, 5, 6, 7])
         )
         self.assertEqual(
             '-z-2-z-3',
-            hw.tenkaiA('z', [1, 0, 0, 1, 0, 0], [1, 1, 2, 1, 1, 3], False)
+            hw.tenkaiA('z', [1, 0, 0, 1, 0, 0], [1, 1, 2, 1, 1, 3])
+        )
+        self.assertEqual(
+            '-6w-8-30w-35',
+            hw.tenkaiA('w', [1, 0, 0, 1, 0, 0], [2, 3, 4, 5, 6, 7])
         )
         self.assertEqual(
             '-6w-8-30w-35',
@@ -114,27 +122,31 @@ class TestTenkaiB(unittest.TestCase):
     def test(self):
         self.assertEqual(
             '2x+5',  # (x+2)+(x+3)
-            hw.tenkaiB('x', [0, 0, 0, 0, 0, 0], [1, 1, 2, 1, 1, 3], False)
+            hw.tenkaiB('x', [0, 0, 0, 0, 0, 0], [1, 1, 2, 1, 1, 3])
         )
         self.assertEqual(
             '36y+43',  # 2(3y+4)+5(6y+7)
-            hw.tenkaiB('y', [0, 0, 0, 0, 0, 0], [2, 3, 4, 5, 6, 7], False)
+            hw.tenkaiB('y', [0, 0, 0, 0, 0, 0], [2, 3, 4, 5, 6, 7])
         )
         self.assertEqual(
             '-2z+5',  # -(z-2)-(z-3)
-            hw.tenkaiB('z', [1, 0, 1, 1, 0, 1], [1, 1, 2, 1, 1, 3], False)
+            hw.tenkaiB('z', [1, 0, 1, 1, 0, 1], [1, 1, 2, 1, 1, 3])
         )
         self.assertEqual(
             '-36w+43',  # -2(3w-4)-5(6w-7)
-            hw.tenkaiB('w', [1, 0, 1, 1, 0, 1], [2, 3, 4, 5, 6, 7], False)
+            hw.tenkaiB('w', [1, 0, 1, 1, 0, 1], [2, 3, 4, 5, 6, 7])
         )
         self.assertEqual(
             '-2a',  # -(a+2)-(a-2)
-            hw.tenkaiB('a', [1, 0, 0, 1, 0, 1], [1, 1, 2, 1, 1, 2], False)
+            hw.tenkaiB('a', [1, 0, 0, 1, 0, 1], [1, 1, 2, 1, 1, 2])
         )
         self.assertEqual(
             '-4',  # -(b+2)-(-b+2)
-            hw.tenkaiB('b', [1, 0, 0, 1, 1, 0], [1, 1, 2, 1, 1, 2], False)
+            hw.tenkaiB('b', [1, 0, 0, 1, 1, 0], [1, 1, 2, 1, 1, 2])
+        )
+        self.assertEqual(
+            '0',  # -(c+2)-(-c-2)
+            hw.tenkaiB('c', [1, 0, 0, 1, 1, 1], [1, 1, 2, 1, 1, 2])
         )
         self.assertEqual(
             '0',  # -(c+2)-(-c-2)
@@ -162,23 +174,31 @@ class TestTenkaiBreduct(unittest.TestCase):
     def test(self):
         self.assertEqual(
             '2x+5',  # ((x+2)+(x+3)) / 1
-            hw.tenkaiB_reduct('x', [0, 0, 0, 0, 0, 0], [1, 1, 2, 1, 1, 3], False, 1)
+            hw.tenkaiB_reduct('x', [0, 0, 0, 0, 0, 0], [1, 1, 2, 1, 1, 3], 1)
         )
         self.assertEqual(
             '2x+5',  # ((x+2)+(11x+28)) / 6
-            hw.tenkaiB_reduct('x', [0, 0, 0, 0, 0, 0], [1, 1, 2, 1, 11, 28], False, 6)
+            hw.tenkaiB_reduct('x', [0, 0, 0, 0, 0, 0], [1, 1, 2, 1, 11, 28], 6)
         )
         self.assertEqual(
             'x',  # ((x+2)+(x-2)) / 2
-            hw.tenkaiB_reduct('x', [0, 0, 0, 0, 0, 1], [1, 1, 2, 1, 1, 2], False, 2)
+            hw.tenkaiB_reduct('x', [0, 0, 0, 0, 0, 1], [1, 1, 2, 1, 1, 2], 2)
         )
         self.assertEqual(
             '1',  # ((x+2)-(x-2)) / 4
-            hw.tenkaiB_reduct('x', [0, 0, 0, 0, 1, 0], [1, 1, 2, 1, 1, 2], False, 4)
+            hw.tenkaiB_reduct('x', [0, 0, 0, 0, 1, 0], [1, 1, 2, 1, 1, 2], 4)
         )
         self.assertEqual(
             '0',  # ((x+2)-(x+2)) / 2
-            hw.tenkaiB_reduct('x', [0, 0, 0, 1, 0, 0], [1, 1, 2, 1, 1, 2], False, 2)
+            hw.tenkaiB_reduct('x', [0, 0, 0, 1, 0, 0], [1, 1, 2, 1, 1, 2], 2)
+        )
+        self.assertEqual(
+            '0',  # ((x+2)-(x+2)) / 2
+            hw.tenkaiB_reduct('x', [0, 0, 0, 1, 0, 0], [1, 1, 2, 1, 1, 2], 2, False)
+        )
+        self.assertEqual(
+            '$0$',  # ((x+2)-(x+2)) / 2
+            hw.tenkaiB_reduct('x', [0, 0, 0, 1, 0, 0], [1, 1, 2, 1, 1, 2], 2, True)
         )
 
 

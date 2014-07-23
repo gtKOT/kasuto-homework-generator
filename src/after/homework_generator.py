@@ -8,9 +8,6 @@ import random
 import copy
 import datetime
 
-# global ------------------------------------------------------
-math_mode = True
-
 
 # TeX 出力 ------------------------------------------------------
 def to_mathmode(expression):
@@ -46,7 +43,7 @@ def bracket_print(sgnL, coeff, moji, sgnR, int):
     return "(" + output + ")"
 
 
-def int_polyn(moji, sgn, intdata, atMathMode):
+def int_polyn(moji, sgn, intdata, atMathMode=False):
     output = sgn_print(sgn[0], avoid_plus=True) + int_coeff(intdata[0])
     output += bracket_print(sgn[1], intdata[1], moji, sgn[2], intdata[2])
     output += sgn_print(sgn[3]) + int_coeff(intdata[3])
@@ -65,7 +62,7 @@ def frac_polyn(moji, sgn, intdata):
     return to_mathmode(output)
 
 
-def tenkaiA(moji, sgn, intdata, atMathMode):
+def tenkaiA(moji, sgn, intdata, atMathMode=False):
     sgnA = (sgn[0] + sgn[1]) % 2
     coeffA = intdata[0] * intdata[1]
     sgnB = (sgn[0] + sgn[2]) % 2
@@ -85,7 +82,7 @@ def tenkaiA(moji, sgn, intdata, atMathMode):
     return output
 
 
-def tenkaiB(moji, sgn, intdata, atMathMode):
+def tenkaiB(moji, sgn, intdata, atMathMode=False):
     output = ""
     coeff  = intdata[0] * intdata[1] * (-1) ** (sgn[0] + sgn[1]) + intdata[3] * intdata[4] * (-1) ** (sgn[3] + sgn[4])
     constt = intdata[0] * intdata[2] * (-1) ** (sgn[0] + sgn[2]) + intdata[3] * intdata[5] * (-1) ** (sgn[3] + sgn[5])
@@ -118,7 +115,7 @@ def common_factor(sgn, intdata, bunbo):
 
 
 # 約分実行
-def tenkaiB_reduct(moji, sgn, intdata, atMathMode, g):
+def tenkaiB_reduct(moji, sgn, intdata, g, atMathMode=False):
     output = ""
     coeff = intdata[0] * intdata[1] * (-1) ** (sgn[0] + sgn[1]) + intdata[3] * intdata[4] * (-1) ** (sgn[3] + sgn[4])
     constt = intdata[0] * intdata[2] * (-1) ** (sgn[0] + sgn[2]) + intdata[3] * intdata[5] * (-1) ** (sgn[3] + sgn[5])
@@ -244,19 +241,18 @@ if __name__ == "__main__":
         g_int = gcd(intdata[0], intdata[3])
         bunbo = intdata[0] * intdata[3] / g_int
         intdata[0], intdata[3] = intdata[3] / g_int, intdata[0] / g_int
-        answers_tex += "\n" + r"& $ \speq \myfrac{" + int_polyn(moji, sgn, intdata, not math_mode) + r"}{" + str(
+        answers_tex += "\n" + r"& $ \speq \myfrac{" + int_polyn(moji, sgn, intdata) + r"}{" + str(
             bunbo) + r"} $ \fracv \\"
-        answers_tex += "\n" + r"& $ \speq \myfrac{" + tenkaiA(moji, sgn, intdata, not math_mode) + r"}{" + str(
+        answers_tex += "\n" + r"& $ \speq \myfrac{" + tenkaiA(moji, sgn, intdata) + r"}{" + str(
             bunbo) + r"} $ \fracv \\"
-        answers_tex += "\n" + r"& $ \speq \myfrac{" + tenkaiB(moji, sgn, intdata, not math_mode) + r"}{" + str(
+        answers_tex += "\n" + r"& $ \speq \myfrac{" + tenkaiB(moji, sgn, intdata) + r"}{" + str(
             bunbo) + r"} $ \fracv \\"
         g = common_factor(sgn, intdata, bunbo)
         if g > 1:
             if bunbo == g:
-                answers_tex += "\n" + r"& $ \speq " + tenkaiB_reduct(moji, sgn, intdata, not math_mode, g) + r" $ \fracv \\"
+                answers_tex += "\n" + r"& $ \speq " + tenkaiB_reduct(moji, sgn, intdata, g) + r" $ \fracv \\"
             else:
-                answers_tex += "\n" + r"& $ \speq \myfrac{" + tenkaiB_reduct(moji, sgn, intdata, not math_mode,
-                                                                     g) + r"}{" + str(bunbo / g) + r"} $ \fracv \\"
+                answers_tex += "\n" + r"& $ \speq \myfrac{" + tenkaiB_reduct(moji, sgn, intdata, g) + r"}{" + str(bunbo / g) + r"} $ \fracv \\"
             answers_tex += "\n" + r"}{4cm}"
         else:
             answers_tex += "\n" + r"}{3.2cm}"
