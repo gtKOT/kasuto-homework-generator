@@ -9,7 +9,6 @@ import copy
 import datetime
 
 # global ------------------------------------------------------
-avoid_plus = True
 math_mode = True
 
 
@@ -34,21 +33,21 @@ def int_coeff(num):
         return ""
 
 
-def frac_coeff(num):
-    if num > 1:
-        return r"\myfrac{1}{" + str(num) + "}"
+def frac_coeff(denominator):
+    if denominator > 1:
+        return r"\myfrac{1}{" + str(denominator) + "}"
     else:
         return ""
 
 
 def bracket_print(sgnL, coeff, moji, sgnR, int):
-    output = "(" + sgn_print(sgnL, avoid_plus) + int_coeff(coeff) + moji
-    output += sgn_print(sgnR) + str(int) + ")"
-    return output
+    output = sgn_print(sgnL, avoid_plus=True) + int_coeff(coeff) + moji
+    output += sgn_print(sgnR) + str(int)
+    return "(" + output + ")"
 
 
 def int_polyn(moji, sgn, intdata, atMathMode):
-    output = sgn_print(sgn[0], avoid_plus) + int_coeff(intdata[0])
+    output = sgn_print(sgn[0], avoid_plus=True) + int_coeff(intdata[0])
     output += bracket_print(sgn[1], intdata[1], moji, sgn[2], intdata[2])
     output += sgn_print(sgn[3]) + int_coeff(intdata[3])
     output += bracket_print(sgn[4], intdata[4], moji, sgn[5], intdata[5])
@@ -59,7 +58,7 @@ def int_polyn(moji, sgn, intdata, atMathMode):
 
 
 def frac_polyn(moji, sgn, intdata):
-    output = sgn_print(sgn[0], avoid_plus) + frac_coeff(intdata[0])
+    output = sgn_print(sgn[0], avoid_plus=True) + frac_coeff(intdata[0])
     output += bracket_print(sgn[1], intdata[1], moji, sgn[2], intdata[2])
     output += sgn_print(sgn[3]) + frac_coeff(intdata[3])
     output += bracket_print(sgn[4], intdata[4], moji, sgn[5], intdata[5])
@@ -76,7 +75,7 @@ def tenkaiA(moji, sgn, intdata, atMathMode):
     sgnD = (sgn[3] + sgn[5]) % 2
     coeffD = intdata[3] * intdata[5]
 
-    output = sgn_print(sgnA, avoid_plus) + int_coeff(coeffA) + moji
+    output = sgn_print(sgnA, avoid_plus=True) + int_coeff(coeffA) + moji
     output += sgn_print(sgnB) + str(coeffB)
     output += sgn_print(sgnC) + int_coeff(coeffC) + moji
     output += sgn_print(sgnD) + str(coeffD)
@@ -147,7 +146,6 @@ def tenkaiB_reduct(moji, sgn, intdata, atMathMode, g):
 
 
 # 排除すべきデータならFalse. 同じ問題と、左右入れ替えただけのものと、カッコの前が+1なものだけ排除
-
 def isAdmissible(tmpdata, data_list):
     lL = len(tmpdata[0])
     lR = len(tmpdata[1])
