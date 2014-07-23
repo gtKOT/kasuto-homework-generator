@@ -35,6 +35,7 @@ class TestBracketPrint(unittest.TestCase):
         self.assertEqual('(-2w-2)', hw.bracket_print(1, 2, 'w', 1, 2))
 
 
+# 現在、bracket_fracstyle_printは未使用
 class TestBracketFracstylePrint(unittest.TestCase):
     def test(self):
         self.assertEqual(r'\myfrac{(x+1)}{2}',   hw.bracket_fracstyle_print(2, 0, 1, 'x', 0, 1))
@@ -87,6 +88,7 @@ class TestFracPolynI(unittest.TestCase):
         )
 
 
+# 現在、frac_polynIIは未使用
 class TestFracPolynII(unittest.TestCase):
     def test(self):
         self.assertEqual(

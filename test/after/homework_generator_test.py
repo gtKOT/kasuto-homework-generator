@@ -35,14 +35,6 @@ class TestBracketPrint(unittest.TestCase):
         self.assertEqual('(-2w-2)', hw.bracket_print(1, 2, 'w', 1, 2))
 
 
-class TestBracketFracstylePrint(unittest.TestCase):
-    def test(self):
-        self.assertEqual(r'\myfrac{(x+1)}{2}',   hw.bracket_fracstyle_print(2, 0, 1, 'x', 0, 1))
-        self.assertEqual(r'\myfrac{(-y-1)}{3}',  hw.bracket_fracstyle_print(3, 1, 1, 'y', 1, 1))
-        self.assertEqual(r'\myfrac{(2z+2)}{4}',  hw.bracket_fracstyle_print(4, 0, 2, 'z', 0, 2))
-        self.assertEqual(r'\myfrac{(-2w-2)}{5}', hw.bracket_fracstyle_print(5, 1, 2, 'w', 1, 2))
-
-
 class TestIntPolyn(unittest.TestCase):
     def test(self):
         self.assertEqual(
@@ -84,22 +76,6 @@ class TestFracPolynI(unittest.TestCase):
         self.assertEqual(
             '$-\myfrac{1}{2}(-3w-4)-\myfrac{1}{5}(-6w-7)$',
             hw.frac_polynI('w', [1, 1, 1, 1, 1, 1], [2, 3, 4, 5, 6, 7])
-        )
-
-
-class TestFracPolynII(unittest.TestCase):
-    def test(self):
-        self.assertEqual(
-            r'\myfrac{(3x+4)}{2}+\myfrac{(6x+7)}{5}',
-            hw.frac_polynII('x', [0, 0, 0, 0, 0, 0], [2, 3, 4, 5, 6, 7], False)
-        )
-        self.assertEqual(
-            r'-\myfrac{(-3y-4)}{2}-\myfrac{(-6y-7)}{5}',
-            hw.frac_polynII('y', [1, 1, 1, 1, 1, 1], [2, 3, 4, 5, 6, 7], False)
-        )
-        self.assertEqual(
-            r'$-\myfrac{(-3y-4)}{2}-\myfrac{(-6y-7)}{5}$',
-            hw.frac_polynII('y', [1, 1, 1, 1, 1, 1], [2, 3, 4, 5, 6, 7], True)
         )
 
 

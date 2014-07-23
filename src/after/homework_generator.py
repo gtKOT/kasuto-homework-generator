@@ -44,12 +44,6 @@ def bracket_print(sgnL, coeff, moji, sgnR, int):
     return output
 
 
-def bracket_fracstyle_print(bunbo, sgnL, coeff, moji, sgnR, int):
-    output = r"\myfrac{(" + sgn_print(sgnL, avoid_plus) + int_coeff(coeff) + moji
-    output += sgn_print(sgnR, no_avoid) + str(int) + r")}{" + str(bunbo) + r"}"
-    return output
-
-
 def int_polyn(moji, sgn, intdata, atMathMode):
     output = r""
     if atMathMode:
@@ -70,19 +64,6 @@ def frac_polynI(moji, sgn, intdata):
     output += sgn_print(sgn[3], no_avoid) + frac_coeff(intdata[3])
     output += bracket_print(sgn[4], intdata[4], moji, sgn[5], intdata[5])
     output += r"$"
-    return output
-
-
-def frac_polynII(moji, sgn, intdata, atMathMode):
-    output = r""
-    if atMathMode:
-        output += r"$"
-    output += sgn_print(sgn[0], avoid_plus)
-    output += bracket_fracstyle_print(intdata[0], sgn[1], intdata[1], moji, sgn[2], intdata[2])
-    output += sgn_print(sgn[3], no_avoid)
-    output += bracket_fracstyle_print(intdata[3], sgn[4], intdata[4], moji, sgn[5], intdata[5])
-    if atMathMode:
-        output += r"$"
     return output
 
 
