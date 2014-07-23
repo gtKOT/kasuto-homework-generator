@@ -4,9 +4,9 @@
 __author__ = 'kimura'
 
 from fractions import gcd
+from datetime import datetime
 import random
 import copy
-import datetime
 
 
 # TeX 出力 ------------------------------------------------------
@@ -174,6 +174,12 @@ def rand_coeff(probs):
         interval += probs[i]
 
 
+def create_tex_file(name, tex):
+    f = open(name + ".tex", "w")
+    f.write(tex)
+    f.close()
+
+
 if __name__ == "__main__":
     # 係数の出やすさ設定
     probs = [0] * 20
@@ -222,10 +228,7 @@ if __name__ == "__main__":
 
     problems_tex += "\n" + r"\end{multienumerate}"
 
-    problems_file_name = datetime.datetime.now().strftime("M1a_HW_frac_%Y%m%d_%H%M_%S")
-    problems_file = open(problems_file_name + ".tex", "w")
-    problems_file.write(problems_tex)
-    problems_file.close()
+    create_tex_file(datetime.now().strftime("M1a_HW_frac_%Y%m%d_%H%M_%S"), problems_tex)
 
     print "problems are generated..."
 
@@ -249,15 +252,15 @@ if __name__ == "__main__":
         g_int = gcd(intdata[0], intdata[3])
         denominator = intdata[0] * intdata[3] / g_int
         intdata[0], intdata[3] = intdata[3] / g_int, intdata[0] / g_int
-        answers_tex += "\n" + r"& $ \speq " + to_myfrac(int_polyn(moji, sgn, intdata), denominator) + " $ \fracv \\"
-        answers_tex += "\n" + r"& $ \speq " + to_myfrac(tenkaiA(moji, sgn, intdata), denominator) + " $ \fracv \\"
-        answers_tex += "\n" + r"& $ \speq " + to_myfrac(tenkaiB(moji, sgn, intdata), denominator) + " $ \fracv \\"
+        answers_tex += "\n" + r"& $ \speq " + to_myfrac(int_polyn(moji, sgn, intdata), denominator) + r" $ \fracv \\"
+        answers_tex += "\n" + r"& $ \speq " + to_myfrac(tenkaiA(moji, sgn, intdata), denominator) + r" $ \fracv \\"
+        answers_tex += "\n" + r"& $ \speq " + to_myfrac(tenkaiB(moji, sgn, intdata), denominator) + r" $ \fracv \\"
         g = common_factor(sgn, intdata, denominator)
         if g > 1:
             if denominator == g:
                 answers_tex += "\n" + r"& $ \speq " + tenkaiB_reduct(moji, sgn, intdata, g) + r" $ \fracv \\"
             else:
-                answers_tex += "\n" + r"& $ \speq " + to_myfrac(tenkaiB_reduct(moji, sgn, intdata, g), denominator / g) + " $ \fracv \\"
+                answers_tex += "\n" + r"& $ \speq " + to_myfrac(tenkaiB_reduct(moji, sgn, intdata, g), denominator / g) + r" $ \fracv \\"
             answers_tex += "\n" + r"}{4cm}"
         else:
             answers_tex += "\n" + r"}{3.2cm}"
@@ -273,9 +276,6 @@ if __name__ == "__main__":
     if page_open:
         answers_tex += "\n" + r"}"
 
-    answers_file_name = datetime.datetime.now().strftime("M1a_HW_fracAns_%Y%m%d_%H%M_%S")
-    answers_file = open(answers_file_name + ".tex", "w")
-    answers_file.write(answers_tex)
-    answers_file.close()
+    create_tex_file(datetime.now().strftime("M1a_HW_fracAns_%Y%m%d_%H%M_%S"), answers_tex)
 
     print "End."
