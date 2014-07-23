@@ -3,6 +3,7 @@
 
 __author__ = 'kimura'
 
+from fractions import gcd
 import random
 import copy
 import datetime
@@ -14,13 +15,6 @@ math_mode = True
 
 
 # 数学関数 ------------------------------------------------------
-def gcd(a, b):
-    if b == 0:
-        return a
-    r = a % b
-    return gcd(b, r)
-
-
 def abs(x):
     if x >= 0:
         return x
