@@ -14,6 +14,10 @@ math_mode = True
 
 
 # TeX 出力 ------------------------------------------------------
+def to_mathmode(expression):
+    return "$" + expression + "$"
+
+
 def sgn_print(boolnum, avoid_plus=False):
     if boolnum == 1:
         return "-"
@@ -32,44 +36,37 @@ def int_coeff(num):
 
 def frac_coeff(num):
     if num > 1:
-        return r"\myfrac{1}{" + str(num) + r"}"
+        return r"\myfrac{1}{" + str(num) + "}"
     else:
         return ""
 
 
 def bracket_print(sgnL, coeff, moji, sgnR, int):
-    output = r"(" + sgn_print(sgnL, avoid_plus) + int_coeff(coeff) + moji
-    output += sgn_print(sgnR) + str(int) + r")"
+    output = "(" + sgn_print(sgnL, avoid_plus) + int_coeff(coeff) + moji
+    output += sgn_print(sgnR) + str(int) + ")"
     return output
 
 
 def int_polyn(moji, sgn, intdata, atMathMode):
-    output = r""
-    if atMathMode:
-        output += r"$"
-    output += sgn_print(sgn[0], avoid_plus) + int_coeff(intdata[0])
+    output = sgn_print(sgn[0], avoid_plus) + int_coeff(intdata[0])
     output += bracket_print(sgn[1], intdata[1], moji, sgn[2], intdata[2])
     output += sgn_print(sgn[3]) + int_coeff(intdata[3])
     output += bracket_print(sgn[4], intdata[4], moji, sgn[5], intdata[5])
+
     if atMathMode:
-        output += r"$"
+        output = to_mathmode(output)
     return output
 
 
 def frac_polyn(moji, sgn, intdata):
-    output = r"$"
-    output += sgn_print(sgn[0], avoid_plus) + frac_coeff(intdata[0])
+    output = sgn_print(sgn[0], avoid_plus) + frac_coeff(intdata[0])
     output += bracket_print(sgn[1], intdata[1], moji, sgn[2], intdata[2])
     output += sgn_print(sgn[3]) + frac_coeff(intdata[3])
     output += bracket_print(sgn[4], intdata[4], moji, sgn[5], intdata[5])
-    output += r"$"
-    return output
+    return to_mathmode(output)
 
 
 def tenkaiA(moji, sgn, intdata, atMathMode):
-    output = r""
-    if atMathMode:
-        output += r"$"
     sgnA = (sgn[0] + sgn[1]) % 2
     coeffA = intdata[0] * intdata[1]
     sgnB = (sgn[0] + sgn[2]) % 2
@@ -78,22 +75,23 @@ def tenkaiA(moji, sgn, intdata, atMathMode):
     coeffC = intdata[3] * intdata[4]
     sgnD = (sgn[3] + sgn[5]) % 2
     coeffD = intdata[3] * intdata[5]
-    output += sgn_print(sgnA, avoid_plus) + int_coeff(coeffA) + moji
+
+    output = sgn_print(sgnA, avoid_plus) + int_coeff(coeffA) + moji
     output += sgn_print(sgnB) + str(coeffB)
     output += sgn_print(sgnC) + int_coeff(coeffC) + moji
     output += sgn_print(sgnD) + str(coeffD)
+
     if atMathMode:
-        output += r"$"
+        output = to_mathmode(output)
     return output
 
 
 def tenkaiB(moji, sgn, intdata, atMathMode):
-    output = r""
-    if atMathMode:
-        output += r"$"
-    coeff = intdata[0] * intdata[1] * (-1) ** (sgn[0] + sgn[1]) + intdata[3] * intdata[4] * (-1) ** (sgn[3] + sgn[4])
+    output = ""
+    coeff  = intdata[0] * intdata[1] * (-1) ** (sgn[0] + sgn[1]) + intdata[3] * intdata[4] * (-1) ** (sgn[3] + sgn[4])
     constt = intdata[0] * intdata[2] * (-1) ** (sgn[0] + sgn[2]) + intdata[3] * intdata[5] * (-1) ** (sgn[3] + sgn[5])
     avoid = False
+
     if coeff > 0:
         output += int_coeff(coeff) + moji
     elif coeff < 0:
@@ -107,8 +105,9 @@ def tenkaiB(moji, sgn, intdata, atMathMode):
     else:
         if coeff == 0:
             output += "0"
+
     if atMathMode:
-        output += r"$"
+        output = to_mathmode(output)
     return output
 
 
@@ -123,14 +122,13 @@ def common_factor(sgn, intdata, bunbo):
 
 # 約分実行
 def tenkaiB_reduct(moji, sgn, intdata, atMathMode, g):
-    output = r""
-    if atMathMode:
-        output += r"$"
+    output = ""
     coeff = intdata[0] * intdata[1] * (-1) ** (sgn[0] + sgn[1]) + intdata[3] * intdata[4] * (-1) ** (sgn[3] + sgn[4])
     constt = intdata[0] * intdata[2] * (-1) ** (sgn[0] + sgn[2]) + intdata[3] * intdata[5] * (-1) ** (sgn[3] + sgn[5])
     avoid = False
     coeff = coeff / g
     constt = constt / g
+
     if coeff > 0:
         output += int_coeff(coeff) + moji
     elif coeff < 0:
@@ -144,8 +142,9 @@ def tenkaiB_reduct(moji, sgn, intdata, atMathMode, g):
     else:
         if coeff == 0:
             output += "0"
+
     if atMathMode:
-        output += r"$"
+        output = to_mathmode(output)
     return output
 
 

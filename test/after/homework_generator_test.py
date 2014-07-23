@@ -7,6 +7,11 @@ import unittest
 import homework_generator as hw
 
 
+class TestMathmode(unittest.TestCase):
+    def test(self):
+        self.assertEqual('$1$', hw.to_mathmode('1'))
+
+
 class TestSgnPrint(unittest.TestCase):
     def test(self):
         self.assertEqual('+', hw.sgn_print(0))
