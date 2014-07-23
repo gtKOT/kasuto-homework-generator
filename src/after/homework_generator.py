@@ -14,14 +14,6 @@ no_avoid = False
 math_mode = True
 
 
-# 数学関数 ------------------------------------------------------
-def abs(x):
-    if x >= 0:
-        return x
-    else:
-        return x * (-1)
-
-
 # TeX 出力 ------------------------------------------------------
 def sgn_print(boolnum, avoid_plus):
     output = "+"
