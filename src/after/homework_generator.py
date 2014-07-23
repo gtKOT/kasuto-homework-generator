@@ -57,7 +57,7 @@ def int_polyn(moji, sgn, intdata, atMathMode):
     return output
 
 
-def frac_polynI(moji, sgn, intdata):
+def frac_polyn(moji, sgn, intdata):
     output = r"$"
     output += sgn_print(sgn[0], avoid_plus) + frac_coeff(intdata[0])
     output += bracket_print(sgn[1], intdata[1], moji, sgn[2], intdata[2])
@@ -219,7 +219,7 @@ if __name__ == "__main__":
         intdata = data_list[i][1]
         if i % 2 == 0:
             TeX += "\n" + r"\mitemxx"
-        TeX += r"{" + frac_polynI(moji, sgn, intdata) + r"}"
+        TeX += r"{" + frac_polyn(moji, sgn, intdata) + r"}"
 
     TeX += "\n" + r"\end{multienumerate}"
 
@@ -245,7 +245,7 @@ if __name__ == "__main__":
             page_open = True
             col_open = True
         TeX += "\n" + r"\qIIans{"
-        TeX += frac_polynI(moji, sgn, intdata) + r"\\"
+        TeX += frac_polyn(moji, sgn, intdata) + r"\\"
         #TeX += "\n" + r"& $ \speq " + frac_polynII(moji,sgn,intdata,not math_mode) + r" $ \fracv \\"
         g_int = gcd(intdata[0], intdata[3])
         bunbo = intdata[0] * intdata[3] / g_int
