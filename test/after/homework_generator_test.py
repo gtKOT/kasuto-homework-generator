@@ -9,8 +9,10 @@ import homework_generator as hw
 
 class TestSgnPrint(unittest.TestCase):
     def test(self):
+        self.assertEqual('+', hw.sgn_print(0))
         self.assertEqual('+', hw.sgn_print(0, False))
         self.assertEqual('',  hw.sgn_print(0, True))
+        self.assertEqual('-', hw.sgn_print(1))
         self.assertEqual('-', hw.sgn_print(1, False))
         self.assertEqual('-', hw.sgn_print(1, True))
 

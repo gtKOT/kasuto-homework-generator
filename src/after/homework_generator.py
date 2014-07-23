@@ -10,12 +10,11 @@ import datetime
 
 # global ------------------------------------------------------
 avoid_plus = True
-no_avoid = False
 math_mode = True
 
 
 # TeX 出力 ------------------------------------------------------
-def sgn_print(boolnum, avoid_plus):
+def sgn_print(boolnum, avoid_plus=False):
     if boolnum == 1:
         return "-"
     elif (boolnum == 0) and (not avoid_plus):
@@ -40,7 +39,7 @@ def frac_coeff(num):
 
 def bracket_print(sgnL, coeff, moji, sgnR, int):
     output = r"(" + sgn_print(sgnL, avoid_plus) + int_coeff(coeff) + moji
-    output += sgn_print(sgnR, no_avoid) + str(int) + r")"
+    output += sgn_print(sgnR) + str(int) + r")"
     return output
 
 
@@ -50,7 +49,7 @@ def int_polyn(moji, sgn, intdata, atMathMode):
         output += r"$"
     output += sgn_print(sgn[0], avoid_plus) + int_coeff(intdata[0])
     output += bracket_print(sgn[1], intdata[1], moji, sgn[2], intdata[2])
-    output += sgn_print(sgn[3], no_avoid) + int_coeff(intdata[3])
+    output += sgn_print(sgn[3]) + int_coeff(intdata[3])
     output += bracket_print(sgn[4], intdata[4], moji, sgn[5], intdata[5])
     if atMathMode:
         output += r"$"
@@ -61,7 +60,7 @@ def frac_polyn(moji, sgn, intdata):
     output = r"$"
     output += sgn_print(sgn[0], avoid_plus) + frac_coeff(intdata[0])
     output += bracket_print(sgn[1], intdata[1], moji, sgn[2], intdata[2])
-    output += sgn_print(sgn[3], no_avoid) + frac_coeff(intdata[3])
+    output += sgn_print(sgn[3]) + frac_coeff(intdata[3])
     output += bracket_print(sgn[4], intdata[4], moji, sgn[5], intdata[5])
     output += r"$"
     return output
@@ -80,9 +79,9 @@ def tenkaiA(moji, sgn, intdata, atMathMode):
     sgnD = (sgn[3] + sgn[5]) % 2
     coeffD = intdata[3] * intdata[5]
     output += sgn_print(sgnA, avoid_plus) + int_coeff(coeffA) + moji
-    output += sgn_print(sgnB, no_avoid) + str(coeffB)
-    output += sgn_print(sgnC, no_avoid) + int_coeff(coeffC) + moji
-    output += sgn_print(sgnD, no_avoid) + str(coeffD)
+    output += sgn_print(sgnB) + str(coeffB)
+    output += sgn_print(sgnC) + int_coeff(coeffC) + moji
+    output += sgn_print(sgnD) + str(coeffD)
     if atMathMode:
         output += r"$"
     return output
