@@ -174,6 +174,21 @@ def rand_coeff(probs):
         interval += probs[i]
 
 
+def create_problems_tex(data_list, mojis):
+    tex = r"\begin{multienumerate}\restmultienumparameters"
+
+    for i in xrange(len(data_list)):
+        moji = mojis[i]
+        sgn = data_list[i][0]
+        intdata = data_list[i][1]
+        if i % 2 == 0:
+            tex += "\n" + r"\mitemxx"
+        tex += r"{" + frac_polyn(moji, sgn, intdata) + r"}"
+
+    tex += "\n" + r"\end{multienumerate}"
+    return tex
+
+
 def create_tex_file(name, tex):
     f = open(name + ".tex", "w")
     f.write(tex)
@@ -210,22 +225,12 @@ if __name__ == "__main__":
             data_list += [copy.deepcopy(tmpdata)]
             m += 1
 
-    # 問題の生成 ---------------------------------------------------------------------
-    problems_tex = r"% seed: " + str(seed) + "\n"
-    problems_tex += r"\begin{multienumerate}\restmultienumparameters"
-
     # 問題ごとの使用文字の確定
     mojis = [moji_list[rand_coeff(moji_prob_list)] for i in xrange(num_of_problems)]
 
-    for i in xrange(num_of_problems):
-        moji = mojis[i]
-        sgn = data_list[i][0]
-        intdata = data_list[i][1]
-        if i % 2 == 0:
-            problems_tex += "\n" + r"\mitemxx"
-        problems_tex += r"{" + frac_polyn(moji, sgn, intdata) + r"}"
-
-    problems_tex += "\n" + r"\end{multienumerate}"
+    # 問題の生成 ---------------------------------------------------------------------
+    problems_tex = r"% seed: " + str(seed) + "\n"
+    problems_tex += create_problems_tex(data_list, mojis)
 
     create_tex_file(datetime.now().strftime("M1a_HW_frac_%Y%m%d_%H%M_%S"), problems_tex)
     print "problems are generated..."
