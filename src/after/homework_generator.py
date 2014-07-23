@@ -215,11 +215,10 @@ if __name__ == "__main__":
     problems_tex += r"\begin{multienumerate}\restmultienumparameters"
 
     # 問題ごとの使用文字の確定
-    mojinum = []
+    mojis = [moji_list[rand_coeff(moji_prob_list)] for i in xrange(num_of_problems)]
+
     for i in xrange(num_of_problems):
-        n = rand_coeff(moji_prob_list)
-        mojinum += [n]
-        moji = moji_list[n]
+        moji = mojis[i]
         sgn = data_list[i][0]
         intdata = data_list[i][1]
         if i % 2 == 0:
@@ -229,7 +228,6 @@ if __name__ == "__main__":
     problems_tex += "\n" + r"\end{multienumerate}"
 
     create_tex_file(datetime.now().strftime("M1a_HW_frac_%Y%m%d_%H%M_%S"), problems_tex)
-
     print "problems are generated..."
 
     # 回答の生成 ---------------------------------------------------------------------
@@ -238,8 +236,7 @@ if __name__ == "__main__":
     answers_tex += r"%"
 
     for i in xrange(num_of_problems):
-        n = mojinum[i]
-        moji = moji_list[n]
+        moji = mojis[i]
         sgn = data_list[i][0]
         intdata = data_list[i][1]
         if i % (2 * colQ) == 0:
@@ -277,5 +274,4 @@ if __name__ == "__main__":
         answers_tex += "\n" + r"}"
 
     create_tex_file(datetime.now().strftime("M1a_HW_fracAns_%Y%m%d_%H%M_%S"), answers_tex)
-
     print "End."
