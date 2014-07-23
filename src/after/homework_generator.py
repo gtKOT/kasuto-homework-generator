@@ -14,6 +14,10 @@ def to_mathmode(expression):
     return "$" + expression + "$"
 
 
+def to_myfrac(numerator, denominator):
+    return r"\myfrac{" + str(numerator) + "}{" + str(denominator) + "}"
+
+
 def sgn_print(boolnum, avoid_plus=False):
     if boolnum == 1:
         return "-"
@@ -26,7 +30,7 @@ def sgn_print(boolnum, avoid_plus=False):
 # 約分は行わない
 def coeff(numerator, denominator=1):
     if denominator > 1:
-        return r"\myfrac{" + str(numerator) + "}{" + str(denominator) + "}"
+        return to_myfrac(numerator, denominator)
     elif numerator > 1:
         return str(numerator)
     else:
@@ -240,18 +244,15 @@ if __name__ == "__main__":
         g_int = gcd(intdata[0], intdata[3])
         bunbo = intdata[0] * intdata[3] / g_int
         intdata[0], intdata[3] = intdata[3] / g_int, intdata[0] / g_int
-        answers_tex += "\n" + r"& $ \speq \myfrac{" + int_polyn(moji, sgn, intdata) + r"}{" + str(
-            bunbo) + r"} $ \fracv \\"
-        answers_tex += "\n" + r"& $ \speq \myfrac{" + tenkaiA(moji, sgn, intdata) + r"}{" + str(
-            bunbo) + r"} $ \fracv \\"
-        answers_tex += "\n" + r"& $ \speq \myfrac{" + tenkaiB(moji, sgn, intdata) + r"}{" + str(
-            bunbo) + r"} $ \fracv \\"
+        answers_tex += "\n" + r"& $ \speq " + to_myfrac(int_polyn(moji, sgn, intdata), bunbo) + " $ \fracv \\"
+        answers_tex += "\n" + r"& $ \speq " + to_myfrac(tenkaiA(moji, sgn, intdata), bunbo) + " $ \fracv \\"
+        answers_tex += "\n" + r"& $ \speq " + to_myfrac(tenkaiB(moji, sgn, intdata), bunbo) + " $ \fracv \\"
         g = common_factor(sgn, intdata, bunbo)
         if g > 1:
             if bunbo == g:
                 answers_tex += "\n" + r"& $ \speq " + tenkaiB_reduct(moji, sgn, intdata, g) + r" $ \fracv \\"
             else:
-                answers_tex += "\n" + r"& $ \speq \myfrac{" + tenkaiB_reduct(moji, sgn, intdata, g) + r"}{" + str(bunbo / g) + r"} $ \fracv \\"
+                answers_tex += "\n" + r"& $ \speq " + to_myfrac(tenkaiB_reduct(moji, sgn, intdata, g), bunbo / g) + " $ \fracv \\"
             answers_tex += "\n" + r"}{4cm}"
         else:
             answers_tex += "\n" + r"}{3.2cm}"

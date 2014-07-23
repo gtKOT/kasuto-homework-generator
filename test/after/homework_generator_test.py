@@ -12,6 +12,13 @@ class TestMathmode(unittest.TestCase):
         self.assertEqual('$1$', hw.to_mathmode('1'))
 
 
+class TestToMyfrac(unittest.TestCase):
+    def test(self):
+        self.assertEqual(r'\myfrac{1}{2}',   hw.to_myfrac(1, 2))
+        self.assertEqual(r'\myfrac{x+1}{2}', hw.to_myfrac('x+1', 2))
+        self.assertEqual(r'\myfrac{1}{y-2}', hw.to_myfrac(1, 'y-2'))
+
+
 class TestSgnPrint(unittest.TestCase):
     def test(self):
         self.assertEqual('+', hw.sgn_print(0))
