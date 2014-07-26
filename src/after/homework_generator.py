@@ -38,30 +38,30 @@ def coeff(numerator, denominator=1):
 
 
 # (ax+b)
-def bracket_print(sgn_a, a, moji, sgn_b, b):
-    output = sgn_print(sgn_a, avoid_plus=True) + coeff(a) + moji
+def bracket_print(sgn_a, a, symbol, sgn_b, b):
+    output = sgn_print(sgn_a, avoid_plus=True) + coeff(a) + symbol
     output += sgn_print(sgn_b) + str(b)
     return "(" + output + ")"
 
 
-def int_polyn(moji, sgn, intdata):
+def int_polyn(symbol, sgn, intdata):
     output = sgn_print(sgn[0], avoid_plus=True) + coeff(intdata[0])
-    output += bracket_print(sgn[1], intdata[1], moji, sgn[2], intdata[2])
+    output += bracket_print(sgn[1], intdata[1], symbol, sgn[2], intdata[2])
     output += sgn_print(sgn[3]) + coeff(intdata[3])
-    output += bracket_print(sgn[4], intdata[4], moji, sgn[5], intdata[5])
+    output += bracket_print(sgn[4], intdata[4], symbol, sgn[5], intdata[5])
     return output
 
 
-def frac_polyn(moji, sgn, intdata):
+def frac_polyn(symbol, sgn, intdata):
     output = sgn_print(sgn[0], avoid_plus=True) + coeff(1, intdata[0])
-    output += bracket_print(sgn[1], intdata[1], moji, sgn[2], intdata[2])
+    output += bracket_print(sgn[1], intdata[1], symbol, sgn[2], intdata[2])
     output += sgn_print(sgn[3]) + coeff(1, intdata[3])
-    output += bracket_print(sgn[4], intdata[4], moji, sgn[5], intdata[5])
+    output += bracket_print(sgn[4], intdata[4], symbol, sgn[5], intdata[5])
     return output
 
 
 # ax+b+cx+d
-def tenkaiA(moji, sgn, intdata):
+def tenkaiA(symbol, sgn, intdata):
     sgn_a = (sgn[0] + sgn[1]) % 2
     a = intdata[0] * intdata[1]
     sgn_b = (sgn[0] + sgn[2]) % 2
@@ -71,24 +71,24 @@ def tenkaiA(moji, sgn, intdata):
     sgn_d = (sgn[3] + sgn[5]) % 2
     d = intdata[3] * intdata[5]
 
-    output = sgn_print(sgn_a, avoid_plus=True) + coeff(a) + moji
+    output = sgn_print(sgn_a, avoid_plus=True) + coeff(a) + symbol
     output += sgn_print(sgn_b) + str(b)
-    output += sgn_print(sgn_c) + coeff(c) + moji
+    output += sgn_print(sgn_c) + coeff(c) + symbol
     output += sgn_print(sgn_d) + str(d)
     return output
 
 
 # ax+b
-def tenkaiB(moji, sgn, intdata):
+def tenkaiB(symbol, sgn, intdata):
     output = ""
     a = intdata[0] * intdata[1] * (-1) ** (sgn[0] + sgn[1]) + intdata[3] * intdata[4] * (-1) ** (sgn[3] + sgn[4])
     b = intdata[0] * intdata[2] * (-1) ** (sgn[0] + sgn[2]) + intdata[3] * intdata[5] * (-1) ** (sgn[3] + sgn[5])
     avoid_plus = False
 
     if a > 0:
-        output += coeff(a) + moji
+        output += coeff(a) + symbol
     elif a < 0:
-        output += "-" + coeff(a * (-1)) + moji
+        output += "-" + coeff(a * (-1)) + symbol
     else:
         avoid_plus = True
 
@@ -112,7 +112,7 @@ def common_factor(sgn, intdata, denominator):
 
 # ax+b
 # 約分実行
-def tenkaiB_reduct(moji, sgn, intdata, g):
+def tenkaiB_reduct(symbol, sgn, intdata, g):
     output = ""
     a = intdata[0] * intdata[1] * (-1) ** (sgn[0] + sgn[1]) + intdata[3] * intdata[4] * (-1) ** (sgn[3] + sgn[4])
     b = intdata[0] * intdata[2] * (-1) ** (sgn[0] + sgn[2]) + intdata[3] * intdata[5] * (-1) ** (sgn[3] + sgn[5])
@@ -121,9 +121,9 @@ def tenkaiB_reduct(moji, sgn, intdata, g):
     b = b / g
 
     if a > 0:
-        output += coeff(a) + moji
+        output += coeff(a) + symbol
     elif a < 0:
-        output += "-" + coeff(a * (-1)) + moji
+        output += "-" + coeff(a * (-1)) + symbol
     else:
         avoid_plus = True
 
@@ -164,12 +164,12 @@ def rand_coeff(probs):
         interval += probs[i]
 
 
-def create_problems_tex(data_list, mojis):
+def create_problems_tex(data_list, symbols):
     tex = r"\begin{multienumerate}\restmultienumparameters"
 
     at_frac_mode = True
     for i in xrange(len(data_list)):
-        moji = mojis[i]
+        symbol = symbols[i]
         sgn = data_list[i][0]
         intdata = data_list[i][1]
 
@@ -178,15 +178,15 @@ def create_problems_tex(data_list, mojis):
             tex += "\n" + r"\mitemxx"
 
         if at_frac_mode:
-            tex += "{" + mathmode(frac_polyn(moji, sgn, intdata)) + "}"
+            tex += "{" + mathmode(frac_polyn(symbol, sgn, intdata)) + "}"
         else:
-            tex += "{" + mathmode(int_polyn(moji, sgn, intdata)) + "}"
+            tex += "{" + mathmode(int_polyn(symbol, sgn, intdata)) + "}"
 
     tex += "\n" + r"\end{multienumerate}"
     return tex
 
 
-def create_answers_tex(data_list, mojis):
+def create_answers_tex(data_list, symbols):
     tex = "%"
     at_frac_mode = True
     at_newpage = True
@@ -194,7 +194,7 @@ def create_answers_tex(data_list, mojis):
     vskip = 0.45
 
     for i in xrange(len(data_list)):
-        moji = mojis[i]
+        symbol = symbols[i]
         sgn = data_list[i][0]
         intdata = data_list[i][1]
 
@@ -211,28 +211,28 @@ def create_answers_tex(data_list, mojis):
 
         tex += "\n" + r"\qIIans{"
         if at_frac_mode:
-            tex += mathmode(frac_polyn(moji, sgn, intdata)) + r"\\"
+            tex += mathmode(frac_polyn(symbol, sgn, intdata)) + r"\\"
             g_int = gcd(intdata[0], intdata[3])
             denominator = intdata[0] * intdata[3] / g_int
             intdata[0], intdata[3] = intdata[3] / g_int, intdata[0] / g_int
-            tex += "\n" + r"& $ \speq " + myfrac(int_polyn(moji, sgn, intdata), denominator) + r" $ \fracv \\"
-            tex += "\n" + r"& $ \speq " + myfrac(tenkaiA(moji, sgn, intdata), denominator) + r" $ \fracv \\"
-            tex += "\n" + r"& $ \speq " + myfrac(tenkaiB(moji, sgn, intdata), denominator) + r" $ \fracv \\"
+            tex += "\n" + r"& $ \speq " + myfrac(int_polyn(symbol, sgn, intdata), denominator) + r" $ \fracv \\"
+            tex += "\n" + r"& $ \speq " + myfrac(tenkaiA(symbol, sgn, intdata), denominator) + r" $ \fracv \\"
+            tex += "\n" + r"& $ \speq " + myfrac(tenkaiB(symbol, sgn, intdata), denominator) + r" $ \fracv \\"
             g = common_factor(sgn, intdata, denominator)
             if g > 1:
                 if denominator == g:
-                    tex += "\n" + r"& $ \speq " + tenkaiB_reduct(moji, sgn, intdata, g) + r" $ \fracv \\"
+                    tex += "\n" + r"& $ \speq " + tenkaiB_reduct(symbol, sgn, intdata, g) + r" $ \fracv \\"
                 else:
-                    tex += "\n" + r"& $ \speq " + myfrac(tenkaiB_reduct(moji, sgn, intdata, g), denominator / g) + r" $ \fracv \\"
+                    tex += "\n" + r"& $ \speq " + myfrac(tenkaiB_reduct(symbol, sgn, intdata, g), denominator / g) + r" $ \fracv \\"
                 tex += "\n" + r"}{4cm}"
                 col_height += 4 + vskip
             else:
                 tex += "\n" + r"}{3.2cm}"
                 col_height += 3.2 + vskip
         else:
-            tex += mathmode(int_polyn(moji, sgn, intdata)) + r"\\"
-            tex += "\n" + r"& $ \speq " + tenkaiA(moji, sgn, intdata) + r"$\\"
-            tex += "\n" + r"& $ \speq " + tenkaiB(moji, sgn, intdata) + r"$\\"
+            tex += mathmode(int_polyn(symbol, sgn, intdata)) + r"\\"
+            tex += "\n" + r"& $ \speq " + tenkaiA(symbol, sgn, intdata) + r"$\\"
+            tex += "\n" + r"& $ \speq " + tenkaiB(symbol, sgn, intdata) + r"$\\"
             tex += "\n" + r"}{1.2cm}"
             col_height += 1.2 + vskip
 
@@ -272,8 +272,8 @@ if __name__ == "__main__":
     for i in xrange(10, 20):
         probs[i] = 1
 
-    moji_list = ["x", "y", "a"]
-    moji_prob_list = [50, 1, 10]
+    symbol_list = ["x", "y", "a"]
+    symbol_prob_list = [50, 1, 10]
 
     # データの生成 -------------------------------------------------------------------
     sgn = [0] * 6
@@ -294,17 +294,17 @@ if __name__ == "__main__":
             n += 1
 
     # 問題ごとの使用文字番号を格納。解答の文字を揃えるため。
-    mojis = [moji_list[rand_coeff(moji_prob_list)] for i in xrange(num_of_problems)]
+    symbols = [symbol_list[rand_coeff(symbol_prob_list)] for i in xrange(num_of_problems)]
 
     # texの1行目に、seed情報をコメント
     header = "% seed: " + str(seed) + "\n"
 
     # 問題の生成 ---------------------------------------------------------------------
-    problems_tex = header + create_problems_tex(data_list, mojis)
+    problems_tex = header + create_problems_tex(data_list, symbols)
     create_tex_file(datetime.now().strftime("M1a_HW_polyn_%Y%m%d_%H%M_%S"), problems_tex)
     print "problems are generated..."
 
     # 回答の生成 ---------------------------------------------------------------------
-    answers_tex = header + create_answers_tex(data_list, mojis)
+    answers_tex = header + create_answers_tex(data_list, symbols)
     create_tex_file(datetime.now().strftime("M1a_HW_polynAns_%Y%m%d_%H%M_%S"), answers_tex)
     print "End."
