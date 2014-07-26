@@ -44,30 +44,24 @@ def bracket_print(sgn_a, a, moji, sgn_b, b):
     return "(" + output + ")"
 
 
-def int_polyn(moji, sgn, intdata, at_math_mode=False):
+def int_polyn(moji, sgn, intdata):
     output = sgn_print(sgn[0], avoid_plus=True) + coeff(intdata[0])
     output += bracket_print(sgn[1], intdata[1], moji, sgn[2], intdata[2])
     output += sgn_print(sgn[3]) + coeff(intdata[3])
     output += bracket_print(sgn[4], intdata[4], moji, sgn[5], intdata[5])
-
-    if at_math_mode:
-        output = mathmode(output)
     return output
 
 
-def frac_polyn(moji, sgn, intdata, at_math_mode=False):
+def frac_polyn(moji, sgn, intdata):
     output = sgn_print(sgn[0], avoid_plus=True) + coeff(1, intdata[0])
     output += bracket_print(sgn[1], intdata[1], moji, sgn[2], intdata[2])
     output += sgn_print(sgn[3]) + coeff(1, intdata[3])
     output += bracket_print(sgn[4], intdata[4], moji, sgn[5], intdata[5])
-
-    if at_math_mode:
-        output = mathmode(output)
     return output
 
 
 # ax+b+cx+d
-def tenkaiA(moji, sgn, intdata, at_math_mode=False):
+def tenkaiA(moji, sgn, intdata):
     sgn_a = (sgn[0] + sgn[1]) % 2
     a = intdata[0] * intdata[1]
     sgn_b = (sgn[0] + sgn[2]) % 2
@@ -81,14 +75,11 @@ def tenkaiA(moji, sgn, intdata, at_math_mode=False):
     output += sgn_print(sgn_b) + str(b)
     output += sgn_print(sgn_c) + coeff(c) + moji
     output += sgn_print(sgn_d) + str(d)
-
-    if at_math_mode:
-        output = mathmode(output)
     return output
 
 
 # ax+b
-def tenkaiB(moji, sgn, intdata, at_math_mode=False):
+def tenkaiB(moji, sgn, intdata):
     output = ""
     a = intdata[0] * intdata[1] * (-1) ** (sgn[0] + sgn[1]) + intdata[3] * intdata[4] * (-1) ** (sgn[3] + sgn[4])
     b = intdata[0] * intdata[2] * (-1) ** (sgn[0] + sgn[2]) + intdata[3] * intdata[5] * (-1) ** (sgn[3] + sgn[5])
@@ -109,8 +100,6 @@ def tenkaiB(moji, sgn, intdata, at_math_mode=False):
         if a == 0:
             output += "0"
 
-    if at_math_mode:
-        output = mathmode(output)
     return output
 
 
@@ -123,7 +112,7 @@ def common_factor(sgn, intdata, denominator):
 
 # ax+b
 # 約分実行
-def tenkaiB_reduct(moji, sgn, intdata, g, at_math_mode=False):
+def tenkaiB_reduct(moji, sgn, intdata, g):
     output = ""
     a = intdata[0] * intdata[1] * (-1) ** (sgn[0] + sgn[1]) + intdata[3] * intdata[4] * (-1) ** (sgn[3] + sgn[4])
     b = intdata[0] * intdata[2] * (-1) ** (sgn[0] + sgn[2]) + intdata[3] * intdata[5] * (-1) ** (sgn[3] + sgn[5])
@@ -146,8 +135,6 @@ def tenkaiB_reduct(moji, sgn, intdata, g, at_math_mode=False):
         if a == 0:
             output += "0"
 
-    if at_math_mode:
-        output = mathmode(output)
     return output
 
 
@@ -191,9 +178,9 @@ def create_problems_tex(data_list, mojis):
             tex += "\n" + r"\mitemxx"
 
         if at_frac_mode:
-            tex += "{" + frac_polyn(moji, sgn, intdata, at_math_mode=True) + "}"
+            tex += "{" + mathmode(frac_polyn(moji, sgn, intdata)) + "}"
         else:
-            tex += "{" + int_polyn(moji, sgn, intdata, at_math_mode=True) + "}"
+            tex += "{" + mathmode(int_polyn(moji, sgn, intdata)) + "}"
 
     tex += "\n" + r"\end{multienumerate}"
     return tex
@@ -224,7 +211,7 @@ def create_answers_tex(data_list, mojis):
 
         tex += "\n" + r"\qIIans{"
         if at_frac_mode:
-            tex += frac_polyn(moji, sgn, intdata, at_math_mode=True) + r"\\"
+            tex += mathmode(frac_polyn(moji, sgn, intdata)) + r"\\"
             g_int = gcd(intdata[0], intdata[3])
             denominator = intdata[0] * intdata[3] / g_int
             intdata[0], intdata[3] = intdata[3] / g_int, intdata[0] / g_int
@@ -243,7 +230,7 @@ def create_answers_tex(data_list, mojis):
                 tex += "\n" + r"}{3.2cm}"
                 col_height += 3.2 + vskip
         else:
-            tex += int_polyn(moji, sgn, intdata, at_math_mode=True) + r"\\"
+            tex += mathmode(int_polyn(moji, sgn, intdata)) + r"\\"
             tex += "\n" + r"& $ \speq " + tenkaiA(moji, sgn, intdata) + r"$\\"
             tex += "\n" + r"& $ \speq " + tenkaiB(moji, sgn, intdata) + r"$\\"
             tex += "\n" + r"}{1.2cm}"
