@@ -10,11 +10,11 @@ import copy
 
 
 # TeX 出力 ------------------------------------------------------
-def to_mathmode(expression):
+def mathmode(expression):
     return "$" + expression + "$"
 
 
-def to_myfrac(numerator, denominator):
+def myfrac(numerator, denominator):
     return r"\myfrac{" + str(numerator) + "}{" + str(denominator) + "}"
 
 
@@ -30,7 +30,7 @@ def sgn_print(boolnum, avoid_plus=False):
 # 約分は行わない
 def coeff(numerator, denominator=1):
     if denominator > 1:
-        return to_myfrac(numerator, denominator)
+        return myfrac(numerator, denominator)
     elif numerator > 1:
         return str(numerator)
     else:
@@ -51,7 +51,7 @@ def int_polyn(moji, sgn, intdata, at_math_mode=False):
     output += bracket_print(sgn[4], intdata[4], moji, sgn[5], intdata[5])
 
     if at_math_mode:
-        output = to_mathmode(output)
+        output = mathmode(output)
     return output
 
 
@@ -62,7 +62,7 @@ def frac_polyn(moji, sgn, intdata, at_math_mode=False):
     output += bracket_print(sgn[4], intdata[4], moji, sgn[5], intdata[5])
 
     if at_math_mode:
-        output = to_mathmode(output)
+        output = mathmode(output)
     return output
 
 
@@ -83,7 +83,7 @@ def tenkaiA(moji, sgn, intdata, at_math_mode=False):
     output += sgn_print(sgn_d) + str(d)
 
     if at_math_mode:
-        output = to_mathmode(output)
+        output = mathmode(output)
     return output
 
 
@@ -110,7 +110,7 @@ def tenkaiB(moji, sgn, intdata, at_math_mode=False):
             output += "0"
 
     if at_math_mode:
-        output = to_mathmode(output)
+        output = mathmode(output)
     return output
 
 
@@ -147,7 +147,7 @@ def tenkaiB_reduct(moji, sgn, intdata, g, at_math_mode=False):
             output += "0"
 
     if at_math_mode:
-        output = to_mathmode(output)
+        output = mathmode(output)
     return output
 
 
@@ -228,15 +228,15 @@ def create_answers_tex(data_list, mojis):
             g_int = gcd(intdata[0], intdata[3])
             denominator = intdata[0] * intdata[3] / g_int
             intdata[0], intdata[3] = intdata[3] / g_int, intdata[0] / g_int
-            tex += "\n" + r"& $ \speq " + to_myfrac(int_polyn(moji, sgn, intdata), denominator) + r" $ \fracv \\"
-            tex += "\n" + r"& $ \speq " + to_myfrac(tenkaiA(moji, sgn, intdata), denominator) + r" $ \fracv \\"
-            tex += "\n" + r"& $ \speq " + to_myfrac(tenkaiB(moji, sgn, intdata), denominator) + r" $ \fracv \\"
+            tex += "\n" + r"& $ \speq " + myfrac(int_polyn(moji, sgn, intdata), denominator) + r" $ \fracv \\"
+            tex += "\n" + r"& $ \speq " + myfrac(tenkaiA(moji, sgn, intdata), denominator) + r" $ \fracv \\"
+            tex += "\n" + r"& $ \speq " + myfrac(tenkaiB(moji, sgn, intdata), denominator) + r" $ \fracv \\"
             g = common_factor(sgn, intdata, denominator)
             if g > 1:
                 if denominator == g:
                     tex += "\n" + r"& $ \speq " + tenkaiB_reduct(moji, sgn, intdata, g) + r" $ \fracv \\"
                 else:
-                    tex += "\n" + r"& $ \speq " + to_myfrac(tenkaiB_reduct(moji, sgn, intdata, g), denominator / g) + r" $ \fracv \\"
+                    tex += "\n" + r"& $ \speq " + myfrac(tenkaiB_reduct(moji, sgn, intdata, g), denominator / g) + r" $ \fracv \\"
                 tex += "\n" + r"}{4cm}"
                 col_height += 4 + vskip
             else:

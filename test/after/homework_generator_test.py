@@ -9,14 +9,14 @@ import homework_generator as hw
 
 class TestMathmode(unittest.TestCase):
     def test(self):
-        self.assertEqual('$1$', hw.to_mathmode('1'))
+        self.assertEqual('$1$', hw.mathmode('1'))
 
 
-class TestToMyfrac(unittest.TestCase):
+class TestMyfrac(unittest.TestCase):
     def test(self):
-        self.assertEqual(r'\myfrac{1}{2}',   hw.to_myfrac(1, 2))
-        self.assertEqual(r'\myfrac{x+1}{2}', hw.to_myfrac('x+1', 2))
-        self.assertEqual(r'\myfrac{1}{y-2}', hw.to_myfrac(1, 'y-2'))
+        self.assertEqual(r'\myfrac{1}{2}',   hw.myfrac(1, 2))
+        self.assertEqual(r'\myfrac{x+1}{2}', hw.myfrac('x+1', 2))
+        self.assertEqual(r'\myfrac{1}{y-2}', hw.myfrac(1, 'y-2'))
 
 
 class TestSgnPrint(unittest.TestCase):
