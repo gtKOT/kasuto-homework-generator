@@ -6,7 +6,6 @@ __author__ = 'kimura'
 from fractions import gcd
 from datetime import datetime
 import random
-import copy
 
 
 # TeX 出力 ------------------------------------------------------
@@ -265,36 +264,32 @@ def create_tex_file(name, tex):
 
 if __name__ == "__main__":
     # 係数の出やすさ設定
-    probs = [0] * 20
+    coeff_probs = [0] * 20
     # 1～9が、等確率で、大体10～19より30倍くらい出やすいように設定。
     for i in xrange(1, 10):
-        probs[i] = 30
+        coeff_probs[i] = 30
     for i in xrange(10, 20):
-        probs[i] = 1
+        coeff_probs[i] = 1
 
     symbol_list = ["x", "y", "a"]
-    symbol_prob_list = [50, 1, 10]
+    symbol_probs = [50, 1, 10]
 
     # データの生成 -------------------------------------------------------------------
-    sgn = [0] * 6
-    intdata = [0] * 6
+    num_of_problems = 300  # とりあえず300題（2の倍数）
     data_list = []
     seed = 20140627
     random.seed(seed)
 
-    num_of_problems = 300  # とりあえず300題（2の倍数）
-    n = 0  # = len(data_list)
-    while n < num_of_problems:
-        for m in xrange(6):
-            sgn[m] = random.randint(0, 1)
-            intdata[m] = rand_coeff(probs)
-        tmpdata = [copy.copy(sgn), copy.copy(intdata)]
-        if isAdmissible(tmpdata, data_list):
-            data_list += [copy.deepcopy(tmpdata)]
-            n += 1
+    while len(data_list) < num_of_problems:
+        data = [
+            [random.randint(0, 1) for i in range(6)],  # 符号情報
+            [rand_coeff(coeff_probs) for i in range(6)]      # 絶対値情報
+        ]
+        if isAdmissible(data, data_list):
+            data_list += [data]
 
     # 問題ごとの使用文字番号を格納。解答の文字を揃えるため。
-    symbols = [symbol_list[rand_coeff(symbol_prob_list)] for i in xrange(num_of_problems)]
+    symbols = [symbol_list[rand_coeff(symbol_probs)] for i in xrange(num_of_problems)]
 
     # texの1行目に、seed情報をコメント
     header = "% seed: " + str(seed) + "\n"
