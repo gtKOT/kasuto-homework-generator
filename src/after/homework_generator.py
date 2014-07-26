@@ -55,12 +55,15 @@ def int_polyn(moji, sgn, intdata, at_math_mode=False):
     return output
 
 
-def frac_polyn(moji, sgn, intdata):
+def frac_polyn(moji, sgn, intdata, at_math_mode=False):
     output = sgn_print(sgn[0], avoid_plus=True) + coeff(1, intdata[0])
     output += bracket_print(sgn[1], intdata[1], moji, sgn[2], intdata[2])
     output += sgn_print(sgn[3]) + coeff(1, intdata[3])
     output += bracket_print(sgn[4], intdata[4], moji, sgn[5], intdata[5])
-    return to_mathmode(output)
+
+    if at_math_mode:
+        output = to_mathmode(output)
+    return output
 
 
 # ax+b+cx+d
@@ -158,7 +161,7 @@ def isAdmissible(tmpdata, data_list):
     b = exchange_tmpdata not in data_list
     c = not (tmpdata[0][0] == 0 and tmpdata[1][0] == 1)
     d = not (tmpdata[0][lL / 2] == 0 and tmpdata[1][lR / 2] == 1)
-    e = not (tmpdata[1][0] == tmpdata[1][3])  # 分数の場合のみ。分母が同じものは排除。
+    e = not (tmpdata[1][0] == tmpdata[1][3])  # 分数の場合のみ排除したいが今回は排除。分母が同じものは排除。
 
     return a and b and c and d and e
 
@@ -177,54 +180,87 @@ def rand_coeff(probs):
 def create_problems_tex(data_list, mojis):
     tex = r"\begin{multienumerate}\restmultienumparameters"
 
+    at_frac_mode = True
     for i in xrange(len(data_list)):
         moji = mojis[i]
         sgn = data_list[i][0]
         intdata = data_list[i][1]
+
         if i % 2 == 0:
+            at_frac_mode = not at_frac_mode  # 2題ごとに分数モードと整数モードの切り替え
             tex += "\n" + r"\mitemxx"
-        tex += r"{" + frac_polyn(moji, sgn, intdata) + r"}"
+
+        if at_frac_mode:
+            tex += "{" + frac_polyn(moji, sgn, intdata, at_math_mode=True) + "}"
+        else:
+            tex += "{" + int_polyn(moji, sgn, intdata, at_math_mode=True) + "}"
 
     tex += "\n" + r"\end{multienumerate}"
     return tex
 
 
 def create_answers_tex(data_list, mojis):
-    colQ = 5
-    tex = r"%"
+    tex = "%"
+    at_frac_mode = True
+    at_newpage = True
+    col_height_max = 17
+    vskip = 0.45
 
     for i in xrange(len(data_list)):
         moji = mojis[i]
         sgn = data_list[i][0]
         intdata = data_list[i][1]
-        if i % (2 * colQ) == 0:
+
+        if i % 2 == 0:
+            at_frac_mode = not at_frac_mode  # 2題ごとに分数モードと整数モードの切り替え
+
+        if at_newpage:
             tex += "\n" + r"\questionII{1cm}{%"
+            at_first_column = True
+            col_height = 0.0
             page_open = True
             col_open = True
-        tex += "\n" + r"\qIIans{"
-        tex += frac_polyn(moji, sgn, intdata) + r"\\"
+            at_newpage = False
 
-        g_int = gcd(intdata[0], intdata[3])
-        denominator = intdata[0] * intdata[3] / g_int
-        intdata[0], intdata[3] = intdata[3] / g_int, intdata[0] / g_int
-        tex += "\n" + r"& $ \speq " + to_myfrac(int_polyn(moji, sgn, intdata), denominator) + r" $ \fracv \\"
-        tex += "\n" + r"& $ \speq " + to_myfrac(tenkaiA(moji, sgn, intdata), denominator) + r" $ \fracv \\"
-        tex += "\n" + r"& $ \speq " + to_myfrac(tenkaiB(moji, sgn, intdata), denominator) + r" $ \fracv \\"
-        g = common_factor(sgn, intdata, denominator)
-        if g > 1:
-            if denominator == g:
-                tex += "\n" + r"& $ \speq " + tenkaiB_reduct(moji, sgn, intdata, g) + r" $ \fracv \\"
+        tex += "\n" + r"\qIIans{"
+        if at_frac_mode:
+            tex += frac_polyn(moji, sgn, intdata, at_math_mode=True) + r"\\"
+            g_int = gcd(intdata[0], intdata[3])
+            denominator = intdata[0] * intdata[3] / g_int
+            intdata[0], intdata[3] = intdata[3] / g_int, intdata[0] / g_int
+            tex += "\n" + r"& $ \speq " + to_myfrac(int_polyn(moji, sgn, intdata), denominator) + r" $ \fracv \\"
+            tex += "\n" + r"& $ \speq " + to_myfrac(tenkaiA(moji, sgn, intdata), denominator) + r" $ \fracv \\"
+            tex += "\n" + r"& $ \speq " + to_myfrac(tenkaiB(moji, sgn, intdata), denominator) + r" $ \fracv \\"
+            g = common_factor(sgn, intdata, denominator)
+            if g > 1:
+                if denominator == g:
+                    tex += "\n" + r"& $ \speq " + tenkaiB_reduct(moji, sgn, intdata, g) + r" $ \fracv \\"
+                else:
+                    tex += "\n" + r"& $ \speq " + to_myfrac(tenkaiB_reduct(moji, sgn, intdata, g), denominator / g) + r" $ \fracv \\"
+                tex += "\n" + r"}{4cm}"
+                col_height += 4 + vskip
             else:
-                tex += "\n" + r"& $ \speq " + to_myfrac(tenkaiB_reduct(moji, sgn, intdata, g), denominator / g) + r" $ \fracv \\"
-            tex += "\n" + r"}{4cm}"
+                tex += "\n" + r"}{3.2cm}"
+                col_height += 3.2 + vskip
         else:
-            tex += "\n" + r"}{3.2cm}"
-        if (i + 1) % colQ == 0:
-            tex += "\n" + r"}{%"
-            col_open = False
-        if (i + 1) % (2 * colQ) == 0:
-            tex += "\n" + r"}" + "\n" + r"%\newpage"
-            page_open = False
+            tex += int_polyn(moji, sgn, intdata, at_math_mode=True) + r"\\"
+            tex += "\n" + r"& $ \speq " + tenkaiA(moji, sgn, intdata) + r"$\\"
+            tex += "\n" + r"& $ \speq " + tenkaiB(moji, sgn, intdata) + r"$\\"
+            tex += "\n" + r"}{1.2cm}"
+            col_height += 1.2 + vskip
+
+        if col_height >= col_height_max:
+            if at_first_column:
+                tex += "\n" + r"%--- end of first column -----------------------------------------"
+                tex += "\n" + r"}{%"
+                col_open = False
+                at_first_column = False
+            else:
+                tex += "\n" + r"%--- end of second column -----------------------------------------"
+                tex += "\n" + r"}" + "\n" + r"%\newpage"
+                page_open = False
+                at_newpage = True
+            col_height = 0.0
 
     if col_open:
         tex += "\n" + r"}{%"
@@ -259,7 +295,7 @@ if __name__ == "__main__":
     seed = 20140627
     random.seed(seed)
 
-    num_of_problems = 200  # とりあえず200題（2の倍数）
+    num_of_problems = 300  # とりあえず300題（2の倍数）
     n = 0  # = len(data_list)
     while n < num_of_problems:
         for m in xrange(6):
@@ -270,7 +306,7 @@ if __name__ == "__main__":
             data_list += [copy.deepcopy(tmpdata)]
             n += 1
 
-    # 問題ごとの使用文字の確定
+    # 問題ごとの使用文字番号を格納。解答の文字を揃えるため。
     mojis = [moji_list[rand_coeff(moji_prob_list)] for i in xrange(num_of_problems)]
 
     # texの1行目に、seed情報をコメント
@@ -278,10 +314,10 @@ if __name__ == "__main__":
 
     # 問題の生成 ---------------------------------------------------------------------
     problems_tex = header + create_problems_tex(data_list, mojis)
-    create_tex_file(datetime.now().strftime("M1a_HW_frac_%Y%m%d_%H%M_%S"), problems_tex)
+    create_tex_file(datetime.now().strftime("M1a_HW_polyn_%Y%m%d_%H%M_%S"), problems_tex)
     print "problems are generated..."
 
     # 回答の生成 ---------------------------------------------------------------------
     answers_tex = header + create_answers_tex(data_list, mojis)
-    create_tex_file(datetime.now().strftime("M1a_HW_fracAns_%Y%m%d_%H%M_%S"), answers_tex)
+    create_tex_file(datetime.now().strftime("M1a_HW_polynAns_%Y%m%d_%H%M_%S"), answers_tex)
     print "End."

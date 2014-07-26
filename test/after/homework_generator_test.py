@@ -77,20 +77,28 @@ class TestIntPolyn(unittest.TestCase):
 class TestFracPolyn(unittest.TestCase):
     def test(self):
         self.assertEqual(
-            '$(x+2)+(x+3)$',
+            '(x+2)+(x+3)',
             hw.frac_polyn('x', [0, 0, 0, 0, 0, 0], [1, 1, 2, 1, 1, 3])
         )
         self.assertEqual(
-            '$\myfrac{1}{2}(3y+4)+\myfrac{1}{5}(6y+7)$',
+            '\myfrac{1}{2}(3y+4)+\myfrac{1}{5}(6y+7)',
             hw.frac_polyn('y', [0, 0, 0, 0, 0, 0], [2, 3, 4, 5, 6, 7])
         )
         self.assertEqual(
-            '$-(-z-2)-(-z-3)$',
+            '-(-z-2)-(-z-3)',
             hw.frac_polyn('z', [1, 1, 1, 1, 1, 1], [1, 1, 2, 1, 1, 3])
         )
         self.assertEqual(
-            '$-\myfrac{1}{2}(-3w-4)-\myfrac{1}{5}(-6w-7)$',
+            '-\myfrac{1}{2}(-3w-4)-\myfrac{1}{5}(-6w-7)',
             hw.frac_polyn('w', [1, 1, 1, 1, 1, 1], [2, 3, 4, 5, 6, 7])
+        )
+        self.assertEqual(
+            '-\myfrac{1}{2}(-3w-4)-\myfrac{1}{5}(-6w-7)',
+            hw.frac_polyn('w', [1, 1, 1, 1, 1, 1], [2, 3, 4, 5, 6, 7], False)
+        )
+        self.assertEqual(
+            '$-\myfrac{1}{2}(-3w-4)-\myfrac{1}{5}(-6w-7)$',
+            hw.frac_polyn('w', [1, 1, 1, 1, 1, 1], [2, 3, 4, 5, 6, 7], True)
         )
 
 
@@ -221,10 +229,13 @@ class TestCreateProblemsTex(unittest.TestCase):
     def test(self):
         data_list = [
             [[0, 0, 0, 0, 0, 0], [2, 3, 4, 5, 6, 7]],
+            [[1, 1, 1, 1, 1, 1], [1, 2, 3, 1, 4, 5]],
+            [[0, 0, 0, 0, 0, 0], [2, 3, 4, 5, 6, 7]],
             [[1, 1, 1, 1, 1, 1], [1, 2, 3, 1, 4, 5]]
         ]
-        symbols = ['x', 'y']
+        symbols = ['x', 'y', 'x', 'y']
         tex = r'\begin{multienumerate}\restmultienumparameters' + '\n' + \
+              r'\mitemxx{$2(3x+4)+5(6x+7)$}{$-(-2y-3)-(-4y-5)$}' + '\n' + \
               r'\mitemxx{$\myfrac{1}{2}(3x+4)+\myfrac{1}{5}(6x+7)$}{$-(-2y-3)-(-4y-5)$}' + '\n' + \
               r'\end{multienumerate}'
         self.assertEqual(tex, hw.create_problems_tex(data_list, symbols))
