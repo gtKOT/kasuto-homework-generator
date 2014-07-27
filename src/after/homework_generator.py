@@ -263,12 +263,8 @@ def create_tex_file(name, tex):
 
 if __name__ == "__main__":
     # 係数の出やすさ設定
-    coeff_probs = [0] * 20
     # 1～9が、等確率で、大体10～19より30倍くらい出やすいように設定。
-    for i in xrange(1, 10):
-        coeff_probs[i] = 30
-    for i in xrange(10, 20):
-        coeff_probs[i] = 1
+    coeff_probs = [0] + ([30] * 9) + ([1] * 10)
 
     symbol_list = ["x", "y", "a"]
     symbol_probs = [50, 1, 10]
