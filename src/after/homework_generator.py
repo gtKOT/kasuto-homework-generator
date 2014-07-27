@@ -281,7 +281,7 @@ if __name__ == "__main__":
             [rand_coeff(coeff_probs) for i in range(6)]  # 絶対値情報
         ]
         if isAdmissible(data, data_list):
-            data_list += [data]
+            data_list.append(data)
 
     # 問題ごとの使用文字番号を格納。解答の文字を揃えるため。
     symbols = [symbol_list[rand_coeff(symbol_probs)] for i in xrange(num_of_problems)]
