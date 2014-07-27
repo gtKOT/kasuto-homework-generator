@@ -17,6 +17,10 @@ def myfrac(numerator, denominator):
     return r"\myfrac{" + str(numerator) + "}{" + str(denominator) + "}"
 
 
+def mitemxx(left, right):
+    return r"\mitemxx{" + left + "}{" + right + "}"
+
+
 def sgn_print(boolnum, avoid_plus=False):
     if boolnum == 1:
         return "-"
@@ -138,16 +142,16 @@ def tenkaiB_reduct(symbol, sgn, intdata, g):
 
 
 # 排除すべきデータならFalse. 同じ問題と、左右入れ替えただけのものと、カッコの前が+1なものだけ排除
-def isAdmissible(tmpdata, data_list):
-    lL = len(tmpdata[0])
-    lR = len(tmpdata[1])
-    exchange_tmpdata = [tmpdata[0][lL / 2:lL] + tmpdata[0][0:lL / 2], tmpdata[1][lR / 2:lR] + tmpdata[1][0:lR / 2]]
+def isAdmissible(data, data_list):
+    lL = len(data[0])
+    lR = len(data[1])
+    exchange_data = [data[0][lL / 2:lL] + data[0][0:lL / 2], data[1][lR / 2:lR] + data[1][0:lR / 2]]
 
-    a = tmpdata not in data_list
-    b = exchange_tmpdata not in data_list
-    c = not (tmpdata[0][0] == 0 and tmpdata[1][0] == 1)
-    d = not (tmpdata[0][lL / 2] == 0 and tmpdata[1][lR / 2] == 1)
-    e = not (tmpdata[1][0] == tmpdata[1][3])  # 分数の場合のみ排除したいが今回は排除。分母が同じものは排除。
+    a = data not in data_list
+    b = exchange_data not in data_list
+    c = not (data[0][0] == 0 and data[1][0] == 1)
+    d = not (data[0][lL / 2] == 0 and data[1][lR / 2] == 1)
+    e = not (data[1][0] == data[1][3])  # 分数の場合のみ排除したいが今回は排除。分母が同じものは排除。
 
     return a and b and c and d and e
 
@@ -164,24 +168,19 @@ def rand_coeff(probs):
 
 
 def create_problems_tex(data_list, symbols):
-    tex = r"\begin{multienumerate}\restmultienumparameters"
+    tex = r"\begin{multienumerate}\restmultienumparameters" + "\n"
+    at_int_mode = True
 
-    at_frac_mode = True
-    for i in xrange(len(data_list)):
-        symbol = symbols[i]
-        sgn = data_list[i][0]
-        intdata = data_list[i][1]
+    for i in xrange(0, len(data_list), 2):
+        polyn = int_polyn if at_int_mode else frac_polyn
 
-        if i % 2 == 0:
-            at_frac_mode = not at_frac_mode  # 2題ごとに分数モードと整数モードの切り替え
-            tex += "\n" + r"\mitemxx"
+        left_problem  = mathmode(polyn(symbols[i],   sgn=data_list[i][0],   intdata=data_list[i][1]))
+        right_problem = mathmode(polyn(symbols[i+1], sgn=data_list[i+1][0], intdata=data_list[i+1][1]))
+        tex += mitemxx(left_problem, right_problem) + "\n"
 
-        if at_frac_mode:
-            tex += "{" + mathmode(frac_polyn(symbol, sgn, intdata)) + "}"
-        else:
-            tex += "{" + mathmode(int_polyn(symbol, sgn, intdata)) + "}"
+        at_int_mode = not at_int_mode  # 2題ごとに整数モードと分数モードの切り替え
 
-    tex += "\n" + r"\end{multienumerate}"
+    tex += r"\end{multienumerate}"
     return tex
 
 
@@ -282,8 +281,8 @@ if __name__ == "__main__":
 
     while len(data_list) < num_of_problems:
         data = [
-            [random.randint(0, 1) for i in range(6)],  # 符号情報
-            [rand_coeff(coeff_probs) for i in range(6)]      # 絶対値情報
+            [random.randint(0, 1) for i in range(6)],    # 符号情報
+            [rand_coeff(coeff_probs) for i in range(6)]  # 絶対値情報
         ]
         if isAdmissible(data, data_list):
             data_list += [data]

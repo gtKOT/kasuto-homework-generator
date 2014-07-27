@@ -19,6 +19,11 @@ class TestMyfrac(unittest.TestCase):
         self.assertEqual(r'\myfrac{1}{y-2}', hw.myfrac(1, 'y-2'))
 
 
+class TestMitemxx(unittest.TestCase):
+    def test(self):
+        self.assertEqual(r'\mitemxx{(x+1)}{(y-2)}', hw.mitemxx('(x+1)', '(y-2)'))
+
+
 class TestSgnPrint(unittest.TestCase):
     def test(self):
         self.assertEqual('+', hw.sgn_print(0))
