@@ -24,6 +24,30 @@ class TestMitemxx(unittest.TestCase):
         self.assertEqual(r'\mitemxx{(x+1)}{(y-2)}', hw.mitemxx('(x+1)', '(y-2)'))
 
 
+class questionii(unittest.TestCase):
+    def test_one_column(self):
+        expected = '\n'.join([
+            r'\questionII{1cm}{%',
+            r'first',
+            r'%--- end of first column -----------------------------------------',
+            r'}'
+        ])
+        self.assertEqual(expected, hw.questionii('first'))
+        self.assertEqual(expected, hw.questionii('first', ''))
+
+    def test_two_column(self):
+        expected = '\n'.join([
+            r'\questionII{1cm}{%',
+            r'first',
+            r'%--- end of first column -----------------------------------------',
+            r'}{%',
+            r'second',
+            r'%--- end of second column -----------------------------------------',
+            r'}',
+        ])
+        self.assertEqual(expected, hw.questionii('first', 'second'))
+
+
 class TestQiians(unittest.TestCase):
     def test_int(self):
         expected = '\n'.join([

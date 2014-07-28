@@ -21,6 +21,25 @@ def mitemxx(left, right):
     return r"\mitemxx{"+left+"}{"+right+"}"
 
 
+def questionii(first_column_tex, second_column_tex=""):
+    tex = "\n".join([
+        r"\questionII{1cm}{%",
+        first_column_tex,
+        "%--- end of first column -----------------------------------------",
+        "}"
+    ])
+
+    if second_column_tex:
+        tex += "\n".join([
+            "{%",
+            second_column_tex,
+            "%--- end of second column -----------------------------------------",
+            "}"
+        ])
+
+    return tex
+
+
 def qiians(expressions, height_cm, frac=False):
     speq  = r" \speq "
     fracv = r" \fracv "
