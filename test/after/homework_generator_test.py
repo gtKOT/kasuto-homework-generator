@@ -199,11 +199,49 @@ class TestCreateProblemsTex(unittest.TestCase):
             [[1, 1, 1, 1, 1, 1], [1, 2, 3, 1, 4, 5]]
         ]
         symbols = ['x', 'y', 'x', 'y']
-        tex = r'\begin{multienumerate}\restmultienumparameters' + '\n' + \
-              r'\mitemxx{$2(3x+4)+5(6x+7)$}{$-(-2y-3)-(-4y-5)$}' + '\n' + \
-              r'\mitemxx{$\myfrac{1}{2}(3x+4)+\myfrac{1}{5}(6x+7)$}{$-(-2y-3)-(-4y-5)$}' + '\n' + \
-              r'\end{multienumerate}'
+        tex = '\n'.join([
+            r'\begin{multienumerate}\restmultienumparameters',
+            r'\mitemxx{$2(3x+4)+5(6x+7)$}{$-(-2y-3)-(-4y-5)$}',
+            r'\mitemxx{$\myfrac{1}{2}(3x+4)+\myfrac{1}{5}(6x+7)$}{$-(-2y-3)-(-4y-5)$}',
+            r'\end{multienumerate}'
+        ])
         self.assertEqual(tex, hw.create_problems_tex(data_list, symbols))
+
+
+class TestCreateAnswersTex(unittest.TestCase):
+    def test(self):
+        data_list = [
+            [[0, 0, 0, 0, 0, 0], [2, 3, 4, 5, 6, 7]],
+            [[1, 1, 1, 1, 1, 1], [1, 2, 3, 1, 4, 5]],
+            [[0, 0, 0, 0, 0, 0], [2, 3, 4, 5, 6, 7]],
+            [[1, 1, 1, 1, 1, 1], [1, 2, 3, 1, 4, 5]]
+        ]
+        symbols = ['x', 'y', 'x', 'y']
+        tex = '\n'.join([
+            r'%',
+            r'\questionII{1cm}{%',
+            r'\qIIans{$2(3x+4)+5(6x+7)$\\',
+            r'& $ \speq 6x+8+30x+35$\\',
+            r'& $ \speq 36x+43$\\',
+            r'}{1.2cm}',
+            r'\qIIans{$-(-2y-3)-(-4y-5)$\\',
+            r'& $ \speq 2y+3+4y+5$\\',
+            r'& $ \speq 6y+8$\\',
+            r'}{1.2cm}',
+            r'\qIIans{$\myfrac{1}{2}(3x+4)+\myfrac{1}{5}(6x+7)$\\',
+            r'& $ \speq \myfrac{5(3x+4)+2(6x+7)}{10} $ \fracv \\',
+            r'& $ \speq \myfrac{15x+20+12x+14}{10} $ \fracv \\',
+            r'& $ \speq \myfrac{27x+34}{10} $ \fracv \\',
+            r'}{3.2cm}',
+            r'\qIIans{$-(-2y-3)-(-4y-5)$\\',
+            r'& $ \speq \myfrac{-(-2y-3)-(-4y-5)}{1} $ \fracv \\',
+            r'& $ \speq \myfrac{2y+3+4y+5}{1} $ \fracv \\',
+            r'& $ \speq \myfrac{6y+8}{1} $ \fracv \\',
+            r'}{3.2cm}',
+            r'}{%',
+            r'}'
+        ])
+        self.assertEqual(tex, hw.create_answers_tex(data_list, symbols))
 
 
 if __name__ == '__main__':
