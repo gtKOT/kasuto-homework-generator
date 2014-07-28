@@ -24,6 +24,17 @@ class TestMitemxx(unittest.TestCase):
         self.assertEqual(r'\mitemxx{(x+1)}{(y-2)}', hw.mitemxx('(x+1)', '(y-2)'))
 
 
+class TestQiians(unittest.TestCase):
+    def test(self):
+        expected = '\n'.join([
+            r'\qIIans{$2(3x+4)+5(6x+7)$\\',
+            r'& $ \speq 6x+8+30x+35$\\',
+            r'& $ \speq 36x+43$\\',
+            r'}{1.2cm}',
+        ])
+        self.assertEqual(expected, hw.qiians(['2(3x+4)+5(6x+7)', '6x+8+30x+35', '36x+43'], 1.2))
+
+
 class TestSgnPrint(unittest.TestCase):
     def test(self):
         self.assertEqual('+', hw.sgn_print(0))

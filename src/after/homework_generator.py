@@ -10,15 +10,24 @@ import random
 
 # TeX 出力 ------------------------------------------------------
 def mathmode(expression):
-    return "$" + expression + "$"
+    return "$"+expression+"$"
 
 
 def myfrac(numerator, denominator):
-    return r"\myfrac{" + str(numerator) + "}{" + str(denominator) + "}"
+    return r"\myfrac{"+str(numerator)+"}{"+str(denominator)+"}"
 
 
 def mitemxx(left, right):
-    return r"\mitemxx{" + left + "}{" + right + "}"
+    return r"\mitemxx{"+left+"}{"+right+"}"
+
+
+def qiians(expressions, height_cm):
+    lines = [mathmode(expressions[0])+r"\\"]
+    lines += map(
+        (lambda expr: "& "+mathmode(r" \speq "+expr)+r"\\"),
+        expressions[1:]
+    )
+    return r"\qIIans{" + "\n".join(lines) + "\n}{"+str(height_cm)+"cm}"
 
 
 def sgn_print(boolnum, avoid_plus=False):
