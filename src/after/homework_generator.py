@@ -168,7 +168,7 @@ def rand_coeff(probs):
 
 
 def create_problems_tex(data_list, symbols):
-    tex = r"\begin{multienumerate}\restmultienumparameters" + "\n"
+    tex_lines = [r"\begin{multienumerate}\restmultienumparameters"]
     at_int_mode = True
 
     for i in xrange(0, len(data_list), 2):
@@ -176,20 +176,25 @@ def create_problems_tex(data_list, symbols):
 
         left_problem  = mathmode(polyn(symbols[i],   sgn=data_list[i][0],   intdata=data_list[i][1]))
         right_problem = mathmode(polyn(symbols[i+1], sgn=data_list[i+1][0], intdata=data_list[i+1][1]))
-        tex += mitemxx(left_problem, right_problem) + "\n"
+        tex_lines.append( mitemxx(left_problem, right_problem) )
 
         at_int_mode = not at_int_mode  # 2題ごとに整数モードと分数モードの切り替え
 
-    tex += r"\end{multienumerate}"
-    return tex
+    tex_lines.append(r"\end{multienumerate}")
+    return "\n".join(tex_lines)
 
 
 def create_answers_tex(data_list, symbols):
-    tex = "%"
     at_frac_mode = True
     at_newpage = True
-    col_height_max = 17
+    at_first_column = True
+    col_open = True
+    page_open = True
+    col_height = 0.0
+    col_height_max = 17.0
     vskip = 0.45
+
+    tex_lines = ["%"]
 
     for i in xrange(len(data_list)):
         symbol = symbols[i]
@@ -200,59 +205,69 @@ def create_answers_tex(data_list, symbols):
             at_frac_mode = not at_frac_mode  # 2題ごとに分数モードと整数モードの切り替え
 
         if at_newpage:
-            tex += "\n" + r"\questionII{1cm}{%"
+            tex_lines.append(r"\questionII{1cm}{%")
             at_first_column = True
             col_height = 0.0
             page_open = True
             col_open = True
             at_newpage = False
 
-        tex += "\n" + r"\qIIans{"
+        tex_lines.append(r"\qIIans{")
         if at_frac_mode:
-            tex += mathmode(frac_polyn(symbol, sgn, intdata)) + r"\\"
+            tex_lines.append(mathmode(frac_polyn(symbol, sgn, intdata)) + r"\\")
             g_int = gcd(intdata[0], intdata[3])
             denominator = intdata[0] * intdata[3] / g_int
             intdata[0], intdata[3] = intdata[3] / g_int, intdata[0] / g_int
-            tex += "\n" + r"& $ \speq " + myfrac(int_polyn(symbol, sgn, intdata), denominator) + r" $ \fracv \\"
-            tex += "\n" + r"& $ \speq " + myfrac(tenkaiA(symbol, sgn, intdata), denominator) + r" $ \fracv \\"
-            tex += "\n" + r"& $ \speq " + myfrac(tenkaiB(symbol, sgn, intdata), denominator) + r" $ \fracv \\"
+            tex_lines.extend([
+                r"& $ \speq " + myfrac(int_polyn(symbol, sgn, intdata), denominator) + r" $ \fracv \\",
+                r"& $ \speq " + myfrac(tenkaiA(symbol, sgn, intdata), denominator) + r" $ \fracv \\",
+                r"& $ \speq " + myfrac(tenkaiB(symbol, sgn, intdata), denominator) + r" $ \fracv \\"
+            ])
             g = common_factor(sgn, intdata, denominator)
             if g > 1:
                 if denominator == g:
-                    tex += "\n" + r"& $ \speq " + tenkaiB_reduct(symbol, sgn, intdata, g) + r" $ \fracv \\"
+                    tex_lines.append(r"& $ \speq " + tenkaiB_reduct(symbol, sgn, intdata, g) + r" $ \fracv \\")
                 else:
-                    tex += "\n" + r"& $ \speq " + myfrac(tenkaiB_reduct(symbol, sgn, intdata, g), denominator / g) + r" $ \fracv \\"
-                tex += "\n" + r"}{4cm}"
+                    tex_lines.append(r"& $ \speq " + myfrac(tenkaiB_reduct(symbol, sgn, intdata, g), denominator / g) + r" $ \fracv \\")
+                tex_lines.append("}{4cm}")
                 col_height += 4 + vskip
             else:
-                tex += "\n" + r"}{3.2cm}"
+                tex_lines.append("}{3.2cm}")
                 col_height += 3.2 + vskip
         else:
-            tex += mathmode(int_polyn(symbol, sgn, intdata)) + r"\\"
-            tex += "\n" + r"& $ \speq " + tenkaiA(symbol, sgn, intdata) + r"$\\"
-            tex += "\n" + r"& $ \speq " + tenkaiB(symbol, sgn, intdata) + r"$\\"
-            tex += "\n" + r"}{1.2cm}"
+            tex_lines.extend([
+                mathmode(int_polyn(symbol, sgn, intdata)) + r"\\",
+                r"& $ \speq " + tenkaiA(symbol, sgn, intdata) + r"$\\",
+                r"& $ \speq " + tenkaiB(symbol, sgn, intdata) + r"$\\",
+                r"}{1.2cm}"
+            ])
             col_height += 1.2 + vskip
 
         if col_height >= col_height_max:
             if at_first_column:
-                tex += "\n" + r"%--- end of first column -----------------------------------------"
-                tex += "\n" + r"}{%"
+                tex_lines.extend([
+                    "%--- end of first column -----------------------------------------",
+                    "}{%"
+                ])
                 col_open = False
                 at_first_column = False
             else:
-                tex += "\n" + r"%--- end of second column -----------------------------------------"
-                tex += "\n" + r"}" + "\n" + r"%\newpage"
+                tex_lines.extend([
+                    "%--- end of second column -----------------------------------------"
+                    "}",
+                ])
+                tex_lines.append(r"%\newpage")
                 page_open = False
                 at_newpage = True
             col_height = 0.0
 
     if col_open:
-        tex += "\n" + r"}{%"
+        tex_lines.append("}{%")
     if page_open:
-        tex += "\n" + r"}"
+        tex_lines.append("}")
 
-    return tex
+    #return tex
+    return "\n".join(tex_lines)
 
 
 def create_tex_file(name, tex):
