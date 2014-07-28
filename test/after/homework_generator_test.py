@@ -30,9 +30,9 @@ class questionii(unittest.TestCase):
             r'\questionII{1cm}{%',
             r'first',
             r'%--- end of first column -----------------------------------------',
+            r'}{%',
             r'}'
         ])
-        self.assertEqual(expected, hw.questionii('first'))
         self.assertEqual(expected, hw.questionii('first', ''))
 
     def test_two_column(self):
@@ -283,6 +283,7 @@ class TestCreateAnswersTex(unittest.TestCase):
             r'& $ \speq \myfrac{2y+3+4y+5}{1}$ \fracv \\',
             r'& $ \speq \myfrac{6y+8}{1}$ \fracv \\',
             r'}{3.2cm}',
+            r'%--- end of first column -----------------------------------------',
             r'}{%',
             r'}'
         ])

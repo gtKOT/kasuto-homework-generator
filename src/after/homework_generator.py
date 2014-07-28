@@ -21,9 +21,11 @@ def mitemxx(left, right):
     return r"\mitemxx{"+left+"}{"+right+"}"
 
 
-def questionii(first_column_tex, second_column_tex=""):
-    tex = "\n".join([
-        r"\questionII{1cm}{%",
+def questionii(first_column_tex, second_column_tex):
+    tex = r"\questionII{1cm}"
+
+    tex += "\n".join([
+        "{%",
         first_column_tex,
         "%--- end of first column -----------------------------------------",
         "}"
@@ -34,6 +36,11 @@ def questionii(first_column_tex, second_column_tex=""):
             "{%",
             second_column_tex,
             "%--- end of second column -----------------------------------------",
+            "}"
+        ])
+    else:
+        tex += "\n".join([
+            "{%",
             "}"
         ])
 
@@ -218,15 +225,15 @@ def create_problems_tex(data_list, symbols):
 
 def create_answers_tex(data_list, symbols):
     at_frac_mode = True
-    at_newpage = True
     at_first_column = True
-    col_open = True
-    page_open = True
     col_height = 0.0
     col_height_max = 17.0
     vskip = 0.45
 
     tex_lines = ["%"]
+    first_column_tex_lines = []
+    second_column_tex_lines = []
+    current_column_tex_lines = first_column_tex_lines
 
     for i in xrange(len(data_list)):
         symbol = symbols[i]
@@ -235,14 +242,6 @@ def create_answers_tex(data_list, symbols):
 
         if i % 2 == 0:
             at_frac_mode = not at_frac_mode  # 2題ごとに分数モードと整数モードの切り替え
-
-        if at_newpage:
-            tex_lines.append(r"\questionII{1cm}{%")
-            at_first_column = True
-            col_height = 0.0
-            page_open = True
-            col_open = True
-            at_newpage = False
 
         if at_frac_mode:
             expressions = [frac_polyn(symbol, sgn, intdata)]
@@ -274,31 +273,33 @@ def create_answers_tex(data_list, symbols):
             ]
             problem_height = 1.2
 
-        tex_lines.append(qiians(expressions, problem_height, at_frac_mode))
+        current_column_tex_lines.append(qiians(expressions, problem_height, at_frac_mode))
         col_height += problem_height + vskip
 
+        # 列の終わり
         if col_height >= col_height_max:
             if at_first_column:
-                tex_lines.extend([
-                    "%--- end of first column -----------------------------------------",
-                    "}{%"
-                ])
-                col_open = False
+                current_column_tex_lines = second_column_tex_lines
                 at_first_column = False
             else:
-                tex_lines.extend([
-                    "%--- end of second column -----------------------------------------",
-                    "}",
-                ])
+                tex_lines.append(questionii(
+                    "\n".join(first_column_tex_lines),
+                    "\n".join(second_column_tex_lines)
+                ))
                 tex_lines.append(r"%\newpage")
-                page_open = False
-                at_newpage = True
+
+                first_column_tex_lines = []
+                second_column_tex_lines = []
+                current_column_tex_lines = first_column_tex_lines
+                at_first_column = True
+
             col_height = 0.0
 
-    if col_open:
-        tex_lines.append("}{%")
-    if page_open:
-        tex_lines.append("}")
+    if len(first_column_tex_lines) >= 1:
+        tex_lines.append(questionii(
+            "\n".join(first_column_tex_lines),
+            "\n".join(second_column_tex_lines)
+        ))
 
     return "\n".join(tex_lines)
 
