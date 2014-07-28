@@ -21,10 +21,14 @@ def mitemxx(left, right):
     return r"\mitemxx{"+left+"}{"+right+"}"
 
 
-def qiians(expressions, height_cm):
+def qiians(expressions, height_cm, frac=False):
+    speq  = r" \speq "
+    fracv = r" \fracv "
+
     lines = [mathmode(expressions[0])+r"\\"]
     lines += map(
-        (lambda expr: "& "+mathmode(r" \speq "+expr)+r"\\"),
+        (lambda expr:
+            "& "+mathmode(speq + expr)+(fracv if frac else "")+r"\\"),
         expressions[1:]
     )
     return r"\qIIans{" + "\n".join(lines) + "\n}{"+str(height_cm)+"cm}"
@@ -221,36 +225,38 @@ def create_answers_tex(data_list, symbols):
             col_open = True
             at_newpage = False
 
-        tex_lines.append(r"\qIIans{")
         if at_frac_mode:
-            tex_lines.append(mathmode(frac_polyn(symbol, sgn, intdata)) + r"\\")
+            expressions = [frac_polyn(symbol, sgn, intdata)]
+
             g_int = gcd(intdata[0], intdata[3])
             denominator = intdata[0] * intdata[3] / g_int
             intdata[0], intdata[3] = intdata[3] / g_int, intdata[0] / g_int
-            tex_lines.extend([
-                r"& $ \speq " + myfrac(int_polyn(symbol, sgn, intdata), denominator) + r" $ \fracv \\",
-                r"& $ \speq " + myfrac(tenkaiA(symbol, sgn, intdata), denominator) + r" $ \fracv \\",
-                r"& $ \speq " + myfrac(tenkaiB(symbol, sgn, intdata), denominator) + r" $ \fracv \\"
-            ])
+
+            expressions += [
+                myfrac(int_polyn(symbol, sgn, intdata), denominator),
+                myfrac(tenkaiA(symbol, sgn, intdata), denominator),
+                myfrac(tenkaiB(symbol, sgn, intdata), denominator)
+            ]
+
             g = common_factor(sgn, intdata, denominator)
             if g > 1:
                 if denominator == g:
-                    tex_lines.append(r"& $ \speq " + tenkaiB_reduct(symbol, sgn, intdata, g) + r" $ \fracv \\")
+                    expressions.append( tenkaiB_reduct(symbol, sgn, intdata, g) )
                 else:
-                    tex_lines.append(r"& $ \speq " + myfrac(tenkaiB_reduct(symbol, sgn, intdata, g), denominator / g) + r" $ \fracv \\")
-                tex_lines.append("}{4cm}")
-                col_height += 4 + vskip
+                    expressions.append( myfrac(tenkaiB_reduct(symbol, sgn, intdata, g), denominator / g) )
+                problem_height = 4
             else:
-                tex_lines.append("}{3.2cm}")
-                col_height += 3.2 + vskip
+                problem_height = 3.2
         else:
-            tex_lines.extend([
-                mathmode(int_polyn(symbol, sgn, intdata)) + r"\\",
-                r"& $ \speq " + tenkaiA(symbol, sgn, intdata) + r"$\\",
-                r"& $ \speq " + tenkaiB(symbol, sgn, intdata) + r"$\\",
-                r"}{1.2cm}"
-            ])
-            col_height += 1.2 + vskip
+            expressions = [
+                int_polyn(symbol, sgn, intdata),
+                tenkaiA(symbol, sgn, intdata),
+                tenkaiB(symbol, sgn, intdata),
+            ]
+            problem_height = 1.2
+
+        tex_lines.append(qiians(expressions, problem_height, at_frac_mode))
+        col_height += problem_height + vskip
 
         if col_height >= col_height_max:
             if at_first_column:
@@ -262,7 +268,7 @@ def create_answers_tex(data_list, symbols):
                 at_first_column = False
             else:
                 tex_lines.extend([
-                    "%--- end of second column -----------------------------------------"
+                    "%--- end of second column -----------------------------------------",
                     "}",
                 ])
                 tex_lines.append(r"%\newpage")
@@ -275,7 +281,6 @@ def create_answers_tex(data_list, symbols):
     if page_open:
         tex_lines.append("}")
 
-    #return tex
     return "\n".join(tex_lines)
 
 
