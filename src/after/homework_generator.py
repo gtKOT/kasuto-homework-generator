@@ -180,14 +180,14 @@ def is_admissible(nums, nums_list):
 
 
 # 乱数の割合調節
-def rand_coeff(probs):
-    s = sum(probs)
-    int = random.randint(1, s)
+def rand(distribution):
+    s = sum(distribution)
+    r = random.randint(1, s)
     interval = 0
-    for i in xrange(len(probs)):
-        if interval <= int and int <= interval + probs[i]:
+    for i in xrange(len(distribution)):
+        if interval < r <= interval + distribution[i]:
             return i
-        interval += probs[i]
+        interval += distribution[i]
 
 
 def create_problems_tex(nums_list, symbols):
@@ -298,10 +298,10 @@ def create_tex_file(name, tex):
 if __name__ == "__main__":
     # 係数の出やすさ設定
     # 1～9が、等確率で、大体10～19より30倍くらい出やすいように設定。
-    coeff_probs = [0] + ([30] * 9) + ([1] * 10)
+    coeff_distribution = [0] + ([30] * 9) + ([1] * 10)
 
     symbol_list = ["x", "y", "a"]
-    symbol_probs = [50, 1, 10]
+    symbol_distribution = [50, 1, 10]
 
     # データの生成 -------------------------------------------------------------------
     num_of_problems = 300  # とりあえず300題（2の倍数）
@@ -311,13 +311,13 @@ if __name__ == "__main__":
 
     while len(nums_list) < num_of_problems:
         nums = [
-            random.choice([-1, 1]) * rand_coeff(coeff_probs) for i in range(6)
+            random.choice([-1, 1]) * rand(coeff_distribution) for i in range(6)
         ]
         if is_admissible(nums, nums_list):
             nums_list.append(nums)
 
     # 問題ごとの使用文字番号を格納。解答の文字を揃えるため。
-    symbols = [symbol_list[rand_coeff(symbol_probs)] for i in xrange(num_of_problems)]
+    symbols = [symbol_list[rand(symbol_distribution)] for i in xrange(num_of_problems)]
 
     # texの1行目に、seed情報をコメント
     header = "% seed: " + str(seed) + "\n"
