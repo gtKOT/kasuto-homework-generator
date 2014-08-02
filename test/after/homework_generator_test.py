@@ -173,55 +173,55 @@ class TestFracPolyn(unittest.TestCase):
         )
 
 
-class TestTenkaiA(unittest.TestCase):
+class TestExpandA(unittest.TestCase):
     def test(self):
         self.assertEqual(
             'x+2+x+3',
-            hw.tenkaiA([1, 1, 2, 1, 1, 3], 'x')
+            hw.expand_a([1, 1, 2, 1, 1, 3], 'x')
         )
         self.assertEqual(
             '6y+8+30y+35',
-            hw.tenkaiA([2, 3, 4, 5, 6, 7], 'y')
+            hw.expand_a([2, 3, 4, 5, 6, 7], 'y')
         )
         self.assertEqual(
             '-z-2-z-3',
-            hw.tenkaiA([-1, 1, 2, -1, 1, 3], 'z')
+            hw.expand_a([-1, 1, 2, -1, 1, 3], 'z')
         )
         self.assertEqual(
             '-6w-8-30w-35',
-            hw.tenkaiA([-2, 3, 4, -5, 6, 7], 'w')
+            hw.expand_a([-2, 3, 4, -5, 6, 7], 'w')
         )
 
 
-class TestTenkaiB(unittest.TestCase):
+class TestExpandB(unittest.TestCase):
     def test(self):
         self.assertEqual(
             '2x+5',  # (x+2)+(x+3)
-            hw.tenkaiB([1, 1, 2, 1, 1, 3], 'x')
+            hw.expand_b([1, 1, 2, 1, 1, 3], 'x')
         )
         self.assertEqual(
             '36y+43',  # 2(3y+4)+5(6y+7)
-            hw.tenkaiB([2, 3, 4, 5, 6, 7], 'y')
+            hw.expand_b([2, 3, 4, 5, 6, 7], 'y')
         )
         self.assertEqual(
             '-2z+5',  # -(z-2)-(z-3)
-            hw.tenkaiB([-1, 1, -2, -1, 1, -3], 'z')
+            hw.expand_b([-1, 1, -2, -1, 1, -3], 'z')
         )
         self.assertEqual(
             '-36w+43',  # -2(3w-4)-5(6w-7)
-            hw.tenkaiB([-2, 3, -4, -5, 6, -7], 'w')
+            hw.expand_b([-2, 3, -4, -5, 6, -7], 'w')
         )
         self.assertEqual(
             '-2a',  # -(a+2)-(a-2)
-            hw.tenkaiB([-1, 1, 2, -1, 1, -2], 'a')
+            hw.expand_b([-1, 1, 2, -1, 1, -2], 'a')
         )
         self.assertEqual(
             '-4',  # -(b+2)-(-b+2)
-            hw.tenkaiB([-1, 1, 2, -1, -1, 2], 'b')
+            hw.expand_b([-1, 1, 2, -1, -1, 2], 'b')
         )
         self.assertEqual(
             '0',  # -(c+2)-(-c-2)
-            hw.tenkaiB([-1, 1, 2, -1, -1, -2], 'c')
+            hw.expand_b([-1, 1, 2, -1, -1, -2], 'c')
         )
 
 
@@ -237,40 +237,40 @@ class TestCommonFactor(unittest.TestCase):
         self.assertEqual(4, hw.common_factor([1, 1, 2, 1, -1, 2], 4))
 
 
-class TestTenkaiBreduct(unittest.TestCase):
+class TestExpandBreduct(unittest.TestCase):
     def test(self):
         self.assertEqual(
             '2x+5',  # ((x+2)+(x+3)) / 1
-            hw.tenkaiB_reduct([1, 1, 2, 1, 1, 3], 'x', 1)
+            hw.expand_b_reduct([1, 1, 2, 1, 1, 3], 'x', 1)
         )
         self.assertEqual(
             '2x+5',  # ((x+2)+(11x+28)) / 6
-            hw.tenkaiB_reduct([1, 1, 2, 1, 11, 28], 'x', 6)
+            hw.expand_b_reduct([1, 1, 2, 1, 11, 28], 'x', 6)
         )
         self.assertEqual(
             'x',  # ((x+2)+(x-2)) / 2
-            hw.tenkaiB_reduct([1, 1, 2, 1, 1, -2], 'x', 2)
+            hw.expand_b_reduct([1, 1, 2, 1, 1, -2], 'x', 2)
         )
         self.assertEqual(
             '1',  # ((x+2)-(x-2)) / 4
-            hw.tenkaiB_reduct([1, 1, 2, 1, -1, 2], 'x', 4)
+            hw.expand_b_reduct([1, 1, 2, 1, -1, 2], 'x', 4)
         )
         self.assertEqual(
             '0',  # ((x+2)-(x+2)) / 2
-            hw.tenkaiB_reduct([1, 1, 2, -1, 1, 2], 'x', 2)
+            hw.expand_b_reduct([1, 1, 2, -1, 1, 2], 'x', 2)
         )
 
 
 class TestIsAdmissible(unittest.TestCase):
     def test(self):
-        self.assertTrue(hw.isAdmissible([2, 3, 4, 5, 6, 7], []))
-        self.assertFalse(hw.isAdmissible([2, 3, 4, 5, 6, 7], [[2, 3, 4, 5, 6, 7]]))
-        self.assertFalse(hw.isAdmissible([2, 3, 4, 5, 6, 7], [[5, 6, 7, 2, 3, 4]]))
-        self.assertFalse(hw.isAdmissible([1, 3, 4, 5, 6, 7], []))
-        self.assertFalse(hw.isAdmissible([2, 3, 4, 1, 6, 7], []))
-        self.assertFalse(hw.isAdmissible([2, 3, 4, 2, 6, 7], []))
-        self.assertFalse(hw.isAdmissible([-2, 3, 4,  2, 6, 7], []))
-        self.assertFalse(hw.isAdmissible([ 2, 3, 4, -2, 6, 7], []))
+        self.assertTrue(hw.is_admissible([2, 3, 4, 5, 6, 7], []))
+        self.assertFalse(hw.is_admissible([2, 3, 4, 5, 6, 7], [[2, 3, 4, 5, 6, 7]]))
+        self.assertFalse(hw.is_admissible([2, 3, 4, 5, 6, 7], [[5, 6, 7, 2, 3, 4]]))
+        self.assertFalse(hw.is_admissible([1, 3, 4, 5, 6, 7], []))
+        self.assertFalse(hw.is_admissible([2, 3, 4, 1, 6, 7], []))
+        self.assertFalse(hw.is_admissible([2, 3, 4, 2, 6, 7], []))
+        self.assertFalse(hw.is_admissible([-2, 3, 4,  2, 6, 7], []))
+        self.assertFalse(hw.is_admissible([ 2, 3, 4, -2, 6, 7], []))
 
 
 class TestCreateProblemsTex(unittest.TestCase):

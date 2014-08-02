@@ -132,7 +132,7 @@ def frac_polyn(nums, symbol):
 
 
 # ax+b+cx+d
-def tenkaiA(nums, symbol):
+def expand_a(nums, symbol):
     a = nums[0] * nums[1]
     b = nums[0] * nums[2]
     c = nums[3] * nums[4]
@@ -144,7 +144,7 @@ def tenkaiA(nums, symbol):
 
 
 # ax+b
-def tenkaiB(nums, symbol):
+def expand_b(nums, symbol):
     a = nums[0] * nums[1] + nums[3] * nums[4]
     b = nums[0] * nums[2] + nums[3] * nums[5]
     return trim_first_plus(expr(a, symbol, b))
@@ -152,7 +152,7 @@ def tenkaiB(nums, symbol):
 
 # ax+b
 # 約分実行
-def tenkaiB_reduct(nums, symbol, g):
+def expand_b_reduct(nums, symbol, g):
     a = (nums[0] * nums[1] + nums[3] * nums[4]) / g
     b = (nums[0] * nums[2] + nums[3] * nums[5]) / g
     return trim_first_plus(expr(a, symbol, b))
@@ -166,7 +166,7 @@ def common_factor(nums, denominator):
 
 
 # 排除すべきデータならFalse. 同じ問題と、左右入れ替えただけのものと、カッコの前が+1なものだけ排除
-def isAdmissible(nums, nums_list):
+def is_admissible(nums, nums_list):
     length = len(nums)
     exchange_nums = nums[length/2:length] + nums[0:length/2]
 
@@ -237,24 +237,24 @@ def create_answers_tex(nums_list, symbols):
 
             expressions += [
                 myfrac(int_polyn(nums, symbol), denominator),
-                myfrac(tenkaiA(nums, symbol), denominator),
-                myfrac(tenkaiB(nums, symbol), denominator)
+                myfrac(expand_a(nums, symbol), denominator),
+                myfrac(expand_b(nums, symbol), denominator)
             ]
 
             g = common_factor(nums, denominator)
             if g > 1:  # 約分
                 if denominator == g:
-                    expressions.append( tenkaiB_reduct(nums, symbol, g) )
+                    expressions.append( expand_b_reduct(nums, symbol, g) )
                 else:
-                    expressions.append( myfrac(tenkaiB_reduct(nums, symbol, g), denominator / g) )
+                    expressions.append( myfrac(expand_b_reduct(nums, symbol, g), denominator / g) )
                 problem_height = 4
             else:
                 problem_height = 3.2
         else:
             expressions = [
                 int_polyn(nums, symbol),
-                tenkaiA(nums, symbol),
-                tenkaiB(nums, symbol),
+                expand_a(nums, symbol),
+                expand_b(nums, symbol),
             ]
             problem_height = 1.2
 
@@ -313,7 +313,7 @@ if __name__ == "__main__":
         nums = [
             random.choice([-1, 1]) * rand_coeff(coeff_probs) for i in range(6)
         ]
-        if isAdmissible(nums, nums_list):
+        if is_admissible(nums, nums_list):
             nums_list.append(nums)
 
     # 問題ごとの使用文字番号を格納。解答の文字を揃えるため。
