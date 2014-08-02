@@ -65,7 +65,7 @@ def sign(num):
         return "+"
     elif num < 0:
         return "-"
-    else:
+    else:  # num == 0
         return ""
 
 
@@ -100,23 +100,34 @@ def trim_first_plus(str):
         return str
 
 
+# +ax+b
+def expr(a, symbol, b):
+    expression = ""
+
+    if a != 0:
+        expression += coefficient(a) + symbol
+    if b != 0:
+        expression += constant(b)
+
+    return expression or "0"
+
+
 # (ax+b)
-def bracket_print(a, symbol, b):
-    expression = coefficient(a) + symbol + constant(b)
-    return "(" + trim_first_plus(expression) + ")"
+def bracket_expr(a, symbol, b):
+    return "("+trim_first_plus(expr(a, symbol, b))+")"
 
 
 # a(bx+c)+d(ex+f)
 def int_polyn(nums, symbol):
-    expression  = coefficient(nums[0]) + bracket_print(nums[1], symbol, nums[2])
-    expression += coefficient(nums[3]) + bracket_print(nums[4], symbol, nums[5])
+    expression  = coefficient(nums[0]) + bracket_expr(nums[1], symbol, nums[2])
+    expression += coefficient(nums[3]) + bracket_expr(nums[4], symbol, nums[5])
     return trim_first_plus(expression)
 
 
 # \myfrac{1}{a}(bx+c)+\myfrac{1}{d}(ex+f)
 def frac_polyn(nums, symbol):
-    expression  = coefficient(1, nums[0]) + bracket_print(nums[1], symbol, nums[2])
-    expression += coefficient(1, nums[3]) + bracket_print(nums[4], symbol, nums[5])
+    expression  = coefficient(1, nums[0]) + bracket_expr(nums[1], symbol, nums[2])
+    expression += coefficient(1, nums[3]) + bracket_expr(nums[4], symbol, nums[5])
     return trim_first_plus(expression)
 
 
@@ -127,8 +138,8 @@ def tenkaiA(nums, symbol):
     c = nums[3] * nums[4]
     d = nums[3] * nums[5]
 
-    expression  = coefficient(a) + symbol + constant(b)
-    expression += coefficient(c) + symbol + constant(d)
+    expression  = expr(a, symbol, b)
+    expression += expr(c, symbol, d)
     return trim_first_plus(expression)
 
 
@@ -136,14 +147,7 @@ def tenkaiA(nums, symbol):
 def tenkaiB(nums, symbol):
     a = nums[0] * nums[1] + nums[3] * nums[4]
     b = nums[0] * nums[2] + nums[3] * nums[5]
-
-    expression = ""
-    if a != 0:
-        expression += coefficient(a) + symbol
-    if b != 0:
-        expression += constant(b)
-
-    return trim_first_plus(expression or "0")
+    return trim_first_plus(expr(a, symbol, b))
 
 
 # ax+b
@@ -151,14 +155,7 @@ def tenkaiB(nums, symbol):
 def tenkaiB_reduct(nums, symbol, g):
     a = (nums[0] * nums[1] + nums[3] * nums[4]) / g
     b = (nums[0] * nums[2] + nums[3] * nums[5]) / g
-
-    expression = ""
-    if a != 0:
-        expression += coefficient(a) + symbol
-    if b != 0:
-        expression += constant(b)
-
-    return trim_first_plus(expression or "0")
+    return trim_first_plus(expr(a, symbol, b))
 
 
 # 答えが約分可能かどうか。係数と分母の最大公約数

@@ -113,12 +113,24 @@ class TestTrimFirstPlus(unittest.TestCase):
         self.assertEqual('-ax+b', hw.trim_first_plus('-ax+b'))
 
 
-class TestBracketPrint(unittest.TestCase):
+class TestExpr(unittest.TestCase):
     def test(self):
-        self.assertEqual('(x+1)',   hw.bracket_print( 1, 'x',  1))
-        self.assertEqual('(-y-1)',  hw.bracket_print(-1, 'y', -1))
-        self.assertEqual('(2z+2)',  hw.bracket_print( 2, 'z',  2))
-        self.assertEqual('(-2w-2)', hw.bracket_print(-2, 'w', -2))
+        self.assertEqual('+x+1',  hw.expr( 1, 'x',  1))
+        self.assertEqual('-y-1',  hw.expr(-1, 'y', -1))
+        self.assertEqual('+2z+2', hw.expr( 2, 'z',  2))
+        self.assertEqual('-2w-2', hw.expr(-2, 'w', -2))
+        self.assertEqual('+2a', hw.expr(2, 'a', 0))
+        self.assertEqual('+1',  hw.expr(0, 'a', 1))
+        self.assertEqual('-3', hw.expr(0, 'a', -3))
+        self.assertEqual('0',  hw.expr(0, 'a', 0))
+
+
+class TestBracketExpr(unittest.TestCase):
+    def test(self):
+        self.assertEqual('(x+1)',   hw.bracket_expr( 1, 'x',  1))
+        self.assertEqual('(-y-1)',  hw.bracket_expr(-1, 'y', -1))
+        self.assertEqual('(2z+2)',  hw.bracket_expr( 2, 'z',  2))
+        self.assertEqual('(-2w-2)', hw.bracket_expr(-2, 'w', -2))
 
 
 class TestIntPolyn(unittest.TestCase):
